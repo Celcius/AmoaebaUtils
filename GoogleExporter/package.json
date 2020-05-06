@@ -1,0 +1,14 @@
+{
+  "name": "com.amoaeba.googleexporter",
+  "displayName": "ScriptVars",
+  "version": "0.0.1",
+  "unity": "2018.3",
+  "description": "Package for exporting google spreadsheets to scriptable objects. Uses Google Sheets to Unity to retrieve Data. Then create a custom Exporter and feed it to Window/ExportSpreadsheet",
+  "keywords": [
+    "amoeaba",
+    "unity",
+    "google",
+    "spreadsheets"
+  ],
+  "dependencies": {}
+}

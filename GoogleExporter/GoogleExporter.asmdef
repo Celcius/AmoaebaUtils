@@ -1,0 +1,17 @@
+{
+    "name": "GoogleExporter",
+    "references": [
+        "GUID:de11826265b948a47ae2f3e2b3d665e0",
+        "GUID:5fbed0e0c86f6da43a4b3260d38b5cb2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
