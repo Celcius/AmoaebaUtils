@@ -2,7 +2,8 @@
     "name": "GoogleExporter",
     "references": [
         "GUID:de11826265b948a47ae2f3e2b3d665e0",
-        "GUID:5fbed0e0c86f6da43a4b3260d38b5cb2"
+        "GUID:5fbed0e0c86f6da43a4b3260d38b5cb2",
+        "GUID:10314cd94b731a74abd9221d57211e4d"
     ],
     "includePlatforms": [
         "Editor"
