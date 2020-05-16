@@ -63,6 +63,7 @@ public class SpreadSheetExporter : ScriptableObject
                 case ParseType.Int:
                     return int.Parse(value);
                 case ParseType.Float:
+                    value = value.Replace('.',',');
                     return float.Parse(value);
                 case ParseType.String:
                     return value;        
@@ -282,11 +283,11 @@ public class SpreadSheetExporter : ScriptableObject
             FileUtils.GenerateFoldersForPath(instancesFolder);
 
             string className = GetAggregateClassName(spreadsheetName);
-            Type aggregateType = Type.GetType(""+ outputNamespace + "." + className);
+            Type aggregateType = AmoaebaUtils.ReflectionHelpers.GetTypeFromName(""+ outputNamespace + "." + className);
             ScriptableObject aggregateInstance = ScriptableObject.CreateInstance(aggregateType);
 
             className = GetEntryClassName(spreadsheetName);
-            Type classType = Type.GetType(""+ outputNamespace + "." + className);
+            Type classType = AmoaebaUtils.ReflectionHelpers.GetTypeFromName(""+ outputNamespace + "." + className);
             Type arrayType = classType.MakeArrayType();
 
             Array instances = Array.CreateInstance(arrayType.GetElementType(), keys.Count); 
@@ -333,7 +334,8 @@ public class SpreadSheetExporterEditor : Editor
             return;
         }
 
-        bool CanExport = exporter.CanExport();
+        bool compiling = BuildPipeline.isBuildingPlayer || EditorApplication.isCompiling;
+        bool CanExport = exporter.CanExport() && !compiling;
 
         EditorGUI.BeginDisabledGroup(CanExport == false);
         if(GUILayout.Button("Generate Classes"))
@@ -346,6 +348,16 @@ public class SpreadSheetExporterEditor : Editor
             exporter.ExportInstances();
         }
         EditorGUI.EndDisabledGroup();
+
+        if(compiling)
+        {
+            GUIStyle style = new GUIStyle(EditorStyles.label);
+            style.normal.textColor = Color.red;
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Wait for classes to compile", style);
+            EditorGUILayout.Space();
+        }
 
     }
 }
