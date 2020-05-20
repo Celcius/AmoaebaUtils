@@ -1,6 +1,7 @@
 {
     "name": "AmoaebaUtils",
-    "references": [],
+    "references": [
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
