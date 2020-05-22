@@ -11,7 +11,7 @@ public class LinearTransformMovement : TransformMovement
 
     protected override void Move()
     {
-        transform.position += linearMovement * Time.deltaTime;
+        transform.position += Vector3.Scale(linearMovement, AxisMultipliers) * Time.deltaTime;
     }
 }
 }

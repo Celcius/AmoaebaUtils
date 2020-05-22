@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InstantiateOnCollision : MonoBehaviour
+namespace AmoaebaUtils
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+public class InstantiateOnCollision : ApplyOnCollision
+{
+    [SerializeField]
+    private Transform toInstantiate;
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+    protected override void Apply(Transform col)
     {
-        
+        GameObject.Instantiate(toInstantiate, transform.position, Quaternion.identity);
     }
+}
 }

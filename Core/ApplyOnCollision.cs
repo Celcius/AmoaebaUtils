@@ -7,6 +7,16 @@ namespace AmoaebaUtils
 {
 public abstract class ApplyOnCollision : MonoBehaviour
 {
+    public enum CollisionType
+    {
+        Collision,
+        Collision2D,
+        Trigger,
+        Trigger2D,
+    }
+
+    [SerializeField]
+    private CollisionType type = CollisionType.Collision;
 
     [SerializeField]
     private bool useLayerMask;
@@ -22,7 +32,7 @@ public abstract class ApplyOnCollision : MonoBehaviour
     
     protected virtual void OnCollisionEnter(Collision col)
     {
-        if(ShouldApply(col))
+        if(ShouldApply(col.gameObject, CollisionType.Collision))
         {
             Apply(col);
         }
@@ -30,21 +40,32 @@ public abstract class ApplyOnCollision : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D col)
     {
-        if(ShouldApply(col))
+        if(ShouldApply(col.gameObject, CollisionType.Collision2D))
         {
             Apply(col);
         }
     }
 
-    protected virtual bool ShouldApply(Collision2D col)
+    protected virtual void OnTriggerEnter(Collider col)
     {
-        return ShouldApply(col.gameObject.tag, col.gameObject.layer);
+        if(ShouldApply(col.gameObject, CollisionType.Trigger))
+        {
+            Apply(col);
+        }
     }
 
-
-    protected virtual bool ShouldApply(Collision col)
+    protected virtual void OnTriggerEnter2D(Collider2D col)
     {
-        return ShouldApply(col.gameObject.tag, col.gameObject.layer);
+        if(ShouldApply(col.gameObject, CollisionType.Trigger2D))
+        {
+            Apply(col);
+        }
+    }
+
+    protected virtual bool ShouldApply(GameObject otherObj, CollisionType inType)
+    {
+        return type == inType 
+            && ShouldApply(otherObj.tag, otherObj.layer);
     }
 
     protected virtual bool ShouldApply(string objTag, int objLayer)
@@ -54,7 +75,26 @@ public abstract class ApplyOnCollision : MonoBehaviour
             || (useTag && (tag == objTag));
     }
 
-    protected abstract void Apply(Collision col);
-    protected abstract void Apply(Collision2D col);
+    protected virtual void Apply(Collision col)
+    {
+        Apply(col.transform);
+    }
+
+    protected virtual void Apply(Collision2D col)
+    {
+        Apply(col.transform);
+    }
+
+    protected virtual void Apply(Collider col)
+    {
+        Apply(col.transform);
+    }
+
+    protected virtual void Apply(Collider2D col)
+    {
+        Apply(col.transform);
+    }
+
+    protected abstract void Apply(Transform Transform);
 }
 }

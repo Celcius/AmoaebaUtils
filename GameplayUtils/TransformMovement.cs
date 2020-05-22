@@ -6,6 +6,7 @@ namespace  AmoaebaUtils
 {
 public abstract class TransformMovement : MonoBehaviour
 {
+
     [SerializeField]
     private bool canMove = true;
 
@@ -14,6 +15,9 @@ public abstract class TransformMovement : MonoBehaviour
         get { return canMove; }
         set { canMove = value; }
     } 
+
+    [HideInInspector]
+    public Vector3 AxisMultipliers = new Vector3(1,1,1);
 
     private void Update()
     {

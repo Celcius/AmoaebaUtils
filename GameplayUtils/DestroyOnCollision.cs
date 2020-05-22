@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyOnCollision : MonoBehaviour
+namespace AmoaebaUtils
+{
+public class DestroyOnCollision : ApplyOnCollision
 {
     // Start is called before the first frame update
-    void Start()
+    protected override void Apply(Transform transform)
     {
-        
+        Destroy(gameObject);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+}
 }

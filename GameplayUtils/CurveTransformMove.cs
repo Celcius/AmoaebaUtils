@@ -56,12 +56,12 @@ namespace  AmoaebaUtils
         protected override void Move()
         {
             elapsedTime = (elapsedTime + Time.deltaTime) % maxTime;
-            transform.position = new Vector3(EvaluateCurve(XCurve, transform.position.x, elapsedTime),
-                                             EvaluateCurve(YCurve, transform.position.y, elapsedTime),
-                                             EvaluateCurve(ZCurve, transform.position.z, elapsedTime));
+            transform.position = new Vector3(EvaluateCurve(XCurve, transform.position.x, elapsedTime, AxisMultipliers.x),
+                                             EvaluateCurve(YCurve, transform.position.y, elapsedTime, AxisMultipliers.y),
+                                             EvaluateCurve(ZCurve, transform.position.z, elapsedTime, AxisMultipliers.z));
         }
 
-        private float EvaluateCurve(CurveMoveDefinition definition, float prevValue, float elapsedTime)
+        private float EvaluateCurve(CurveMoveDefinition definition, float prevValue, float elapsedTime, float axisMultiplier)
         {
             if(definition.Type == CurveMoveDefinition.CurveMoveType.None)
             {
@@ -78,9 +78,9 @@ namespace  AmoaebaUtils
                 case  CurveMoveDefinition.CurveMoveType.Position:
                     return evaluatedValue;
                 case  CurveMoveDefinition.CurveMoveType.PositionOffset:
-                    return prevValue + evaluatedValue;
+                    return prevValue + evaluatedValue*axisMultiplier;
                 case  CurveMoveDefinition.CurveMoveType.Velocity:
-                    return prevValue + evaluatedValue * Time.deltaTime;
+                    return prevValue + evaluatedValue * Time.deltaTime*axisMultiplier;
             }
 
             Debug.LogError("Fell through unexpected switch case at " + this.name);

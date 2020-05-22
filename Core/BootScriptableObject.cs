@@ -24,7 +24,7 @@ public class BootScriptableObject : ScriptableObject
 #endif
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
 #if UNITY_EDITOR
         EditorApplication.update -= OnEditorUpdate;
@@ -40,7 +40,7 @@ public class BootScriptableObject : ScriptableObject
         }
     }
 
-    protected void OnDisable()
+    protected virtual void OnDisable()
     {
 #if UNITY_EDITOR
         EditorApplication.update -= OnEditorUpdate;

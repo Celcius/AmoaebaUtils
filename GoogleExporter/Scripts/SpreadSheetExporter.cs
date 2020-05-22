@@ -42,6 +42,12 @@ public class SpreadSheetExporter : ScriptableObject
     
     private string folderPath => outputPath + (outputPath.EndsWith("/") ? this.name : "/" + this.name);
 
+    [SerializeField]
+    private VoidEvent OnClassesChange;
+
+    [SerializeField]
+    private VoidEvent OnInstancesChange;
+
     private enum ParseType
     {
         Int,
@@ -73,14 +79,22 @@ public class SpreadSheetExporter : ScriptableObject
             return value;
         }
     }
-    public void ExportClasses()
+    public virtual void ExportClasses()
     {
         Export(false);
+        if(OnClassesChange != null)
+        {
+            OnClassesChange.Invoke();
+        }
     }
 
-    public void ExportInstances()
+    public virtual void ExportInstances()
     {
         Export(true);
+        if(OnInstancesChange != null)
+        {
+            OnInstancesChange.Invoke();
+        }
     }
 
     private void Export(bool exportInstances)
