@@ -29,9 +29,15 @@ public class FollowTransform : MonoBehaviour {
 			return;
 		}
 
-        transform.position = new Vector3(lockX? transform.position.x : transformVariable.Value.position.x,
+
+        MoveTo(new Vector3(lockX? transform.position.x : transformVariable.Value.position.x,
 										lockY? transform.position.y : transformVariable.Value.position.y,
-										lockZ? transform.position.z : transformVariable.Value.position.z);
+										lockZ? transform.position.z : transformVariable.Value.position.z));
+	}
+	
+	protected virtual void MoveTo(Vector3 pos)
+	{
+		transform.position = pos;
 	}
 }
 }

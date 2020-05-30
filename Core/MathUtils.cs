@@ -4,50 +4,39 @@ using UnityEngine;
 
 namespace AmoaebaUtils
 {
-    public static class MathUtils
+public static class MathUtils
+{
+    private static int SumBelow(int n)
     {
-        public static Vector2 RandomPointInSquare(float side)
+        int res = 0;
+        for(int i = n; i > 0; i--)
         {
-            return RandomPointInRectangle(side, side);
+            res += i;
         }
-
-
-        public static Vector2 RandomPointInRectangle(float x, float y)
-        {
-            return RandomPointInRectangle(new Vector2(x,y));
-        }
-
-        public static Vector2 RandomPointInRectangle(Vector2 range)
-        {
-            return new Vector2(Random.Range(-range.x,range.x), 
-                               Random.Range(-range.x,range.y));
-        }
-
-        public static Vector2 RandomPointInOval(float x, float y)
-        {
-            return RandomPointInOval(new Vector2(x,y));
-        }
-
-        public static Vector2 RandomPointInOval(Vector2 radiuses)
-        {
-            return PointInOval(radiuses, Random.Range(0,360.0f));
-        }
-
-        public static Vector2 PointInCircle(float radius, float angleInDegrees)
-        {
-            return PointInOval(radius, radius, angleInDegrees);
-        }
-
-        public static Vector2 PointInOval(float radiusX, float radiusY, float angleInDegrees)
-        {
-            return PointInOval(new Vector2(radiusX, radiusY), angleInDegrees);
-        }
-
-        public static Vector2 PointInOval(Vector2 radiuses, float angleInDegrees)
-        {
-            float angleInRadians = Mathf.Deg2Rad + angleInDegrees;
-            return new Vector2(radiuses.x * Mathf.Cos(angleInRadians),
-                               radiuses.y * Mathf.Sin(angleInRadians));
-        }
+        return res;
     }
+
+    private static int Factorial(int n)
+    {
+        int res = 1;
+        for(int i = n; i > 1; i--)
+        {
+            res *= i;
+        }
+        return res;
+    }
+    
+    private static float ModulateIndex(float index, float total, bool center, bool alternate)
+    {
+        int sign = alternate? index % 2 == 0? -1 : 1 : 1;
+        float modulatedIndex = alternate? ((int) Mathf.Ceil(index/2.0f)) : index;
+
+        if(center)
+        {
+            modulatedIndex -= alternate? sign *(total % 2 == 0? 0.5f : 0) :
+                                total/2.0f - 0.5f;
+        }
+        return sign * modulatedIndex;
+    }
+}
 }
