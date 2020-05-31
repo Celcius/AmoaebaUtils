@@ -15,7 +15,19 @@ public class ParallaxController : MonoBehaviour
     private Vector2 parallaxRatio = Vector2.one;
 
     [SerializeField]
-    private bool wrap = true;
+    private bool instantiateOnAwake = true;
+
+    [SerializeField]
+    private BoolVector2 wrap = new BoolVector2(true, true);
+    
+    
+	[SerializeField]
+	private BooledVector2 ClampWrapMin = new BooledVector2(new BoolVector2(false, false),
+                                                           new Vector2(0,0));
+
+	[SerializeField]
+	private BooledVector2 ClampWrapMax = new BooledVector2(new BoolVector2(false, false),
+                                                           new Vector2(0,0));
 
     [Space]
 
@@ -25,13 +37,13 @@ public class ParallaxController : MonoBehaviour
     private Parallaxable parallaxPrefab;
 
     [SerializeField]
-    private int copyAmount = 2;
+    private Vector2Int copyLayout = new Vector2Int(1,1);
 
     [SerializeField]
-    private bool alternate = true;
+    private BoolVector2 alternate = new BoolVector2(true, true);
 
     [SerializeField]
-    private bool center = true;
+    private BoolVector2 center = new BoolVector2(true, true);
 
     [SerializeField]
     private Vector2 offset = Vector2.zero;
@@ -41,7 +53,8 @@ public class ParallaxController : MonoBehaviour
 
     private List<Parallaxable> instantiatedObjects = new List<Parallaxable>();
 
-    public bool NeedsToInstantiate => (instantiatedObjects.Count != copyAmount);
+    public bool NeedsToInstantiate => (instantiatedObjects.Count != CopyAmount);
+    public int CopyAmount => copyLayout.x*copyLayout.y;
     private Bounds parallaxBounds;
 
     [SerializeField]
@@ -59,7 +72,10 @@ public class ParallaxController : MonoBehaviour
     private void Awake() 
     {
         parallaxScroll = Vector2.zero;
-        InstantiateObjects();   
+        if(instantiateOnAwake)
+        {
+            InstantiateObjects();
+        }
     }
 
     public void InstantiateObjects()
@@ -73,7 +89,7 @@ public class ParallaxController : MonoBehaviour
         Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
         Vector2 max = new Vector2(float.MinValue, float.MinValue);
         Vector3 instanceSize = Vector2.zero;
-        for(int i = 0; i < copyAmount; i++)
+        for(int i = 0; i < CopyAmount; i++)
         {
             Vector3 position = GetModulatedPosition(i);
             Parallaxable instance = Instantiate<Parallaxable>(parallaxPrefab, position,
@@ -101,28 +117,48 @@ public class ParallaxController : MonoBehaviour
             Parallaxable paralaxable = instantiatedObjects[i];
             Vector3 position = GetModulatedPosition(i) + (Vector3)(Vector2.Scale(parallaxRatio, parallaxScroll));
                     
-            if(wrap)
+            if(wrap.x || wrap.y)
             {
-                Vector2 size = (parallaxBounds.size + paralaxable.GetBounds().size/2.0f);
-                position = position-parallaxBounds.min;
-
-                position.x = position.x < 0? size.x + position.x % size.x  : position.x;
-                position.y = position.y < 0? size.y + position.y % size.y  : position.y;
+                Vector2 paralaxableSize = paralaxable.GetBounds().size/2.0f;
+                Vector2 size = (Vector2)parallaxBounds.size + paralaxableSize;
                 
-                position.x = (position.x) %  size.x + parallaxBounds.min.x;
-                position.y = (position.y) %  size.y + parallaxBounds.min.y;
+                position = new Vector3(wrap.x? position.x-parallaxBounds.min.x : position.x,
+                                       wrap.y? position.y-parallaxBounds.min.y : position.y,
+                                       position.z);
+
+                if(wrap.x)
+                {
+                    position.x = position.x < 0? size.x + position.x % size.x  : position.x;
+                    position.x = (position.x) %  size.x + parallaxBounds.min.x;
+                    position.x += transform.position.x;
+                    position.x = Mathf.Min(ClampWrapMax.EvaluateX(position.x+paralaxableSize.x)-paralaxableSize.x, position.x);
+                    position.x = Mathf.Max(ClampWrapMin.EvaluateX(position.x-paralaxableSize.x)+paralaxableSize.x, position.x);
+                }
+
+                if(wrap.y)
+                {
+                    position.y = position.y < 0? size.y + position.y % size.y  : position.y;
+                    position.y = (position.y) %  size.y + parallaxBounds.min.y;
+                    position.y += transform.position.y;
+                    position.y = Mathf.Min(ClampWrapMax.EvaluateY(position.y+paralaxableSize.y)-paralaxableSize.y, position.y);
+                    position.y = Mathf.Max(ClampWrapMin.EvaluateY(position.y-paralaxableSize.y)+paralaxableSize.y, position.y);
+                }
             }
-            paralaxable.transform.position = transform.position+position;
+            else
+            {
+                position += transform.position;
+            }
+            paralaxable.transform.position = position;
         }
     }
 
     private Vector3 GetModulatedPosition(int i)
     {
-        float index = StructUtils.ModulateIndex(i, copyAmount, center, alternate);
-        Vector3 position = (Vector3)offset + (Vector3)padding * index +
-            new Vector3(parallaxPrefab.GetBounds().extents.x*2.0f * index,
-            0,
-            0);
+        Vector2 matrixPos = StructUtils.ModulateMatrixPosition(i, copyLayout, center, alternate);
+        Vector3 position = (Vector3)offset + (Vector3) Vector2.Scale(padding,matrixPos) +
+            new Vector3(parallaxPrefab.GetBounds().extents.x*2.0f * matrixPos.x,
+                        parallaxPrefab.GetBounds().extents.y*2.0f * matrixPos.y,
+                        0);
 
         return position;
     }
@@ -165,7 +201,6 @@ public class ParallaxController : MonoBehaviour
 public class ParallaxControllerEditor : Editor
 {
     private ParallaxController controller;
-
     private void OnAwake()
     {
         controller = (ParallaxController)target;
@@ -184,10 +219,9 @@ public class ParallaxControllerEditor : Editor
             return;
         }
 
-        EditorGUI.BeginChangeCheck();
         base.OnInspectorGUI();
         
-        if (EditorGUI.EndChangeCheck() && controller != null)
+        if (GUILayout.Button("Preview On Editor"))
         {
             controller.InstantiateObjects();
         }

@@ -10,13 +10,14 @@ public class FollowTransform : MonoBehaviour {
     private TransformVar transformVariable;
 
 	[SerializeField]
-	private bool lockX = false;
+	private BoolVector3  lockPos;
 
 	[SerializeField]
-	private bool lockY = false;
-
+	private BooledVector3  ClampMin = new BooledVector3(new BoolVector3(false, false, false),
+                                                    	new Vector3(0,0,0));
 	[SerializeField]
-	private bool lockZ = false;
+	private BooledVector3 ClampMax = new BooledVector3(new BoolVector3(false, false, false),
+                                                    	new Vector3(0,0,0));
 
 	private void Awake()
 	{
@@ -24,15 +25,25 @@ public class FollowTransform : MonoBehaviour {
 	}
 
 	private void Update () {
-	    if(transformVariable == null || transformVariable.Value == null)
+	    
+		if(transformVariable == null || transformVariable.Value == null)
         {
 			return;
 		}
 
+        UpdatePos();
+	}
 
-        MoveTo(new Vector3(lockX? transform.position.x : transformVariable.Value.position.x,
-										lockY? transform.position.y : transformVariable.Value.position.y,
-										lockZ? transform.position.z : transformVariable.Value.position.z));
+	protected virtual void UpdatePos()
+	{
+		Vector3 newPos = new Vector3(lockPos.x? transform.position.x : transformVariable.Value.position.x,
+								     lockPos.y? transform.position.y : transformVariable.Value.position.y,
+									 lockPos.z? transform.position.z : transformVariable.Value.position.z);
+		
+		newPos = Vector3.Max(ClampMin.EvaluateVec(newPos), newPos);
+		newPos = Vector3.Min(ClampMax.EvaluateVec(newPos), newPos);
+
+		MoveTo(newPos);
 	}
 	
 	protected virtual void MoveTo(Vector3 pos)
