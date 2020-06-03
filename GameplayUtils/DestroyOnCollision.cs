@@ -6,10 +6,14 @@ namespace AmoaebaUtils
 {
 public class DestroyOnCollision : ApplyOnCollision
 {
+    public enum DestructionTarget { Self, Other }
+    [SerializeField]
+    private DestructionTarget destructionType = DestructionTarget.Self;
+
     // Start is called before the first frame update
     protected override void Apply(Transform transform)
     {
-        Destroy(gameObject);
+        Destroy(destructionType == DestructionTarget.Self? gameObject : transform.gameObject);
     }
 }
 }

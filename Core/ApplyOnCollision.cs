@@ -9,6 +9,7 @@ public abstract class ApplyOnCollision : MonoBehaviour
 {
     public enum CollisionType
     {
+        Any,
         Collision,
         Collision2D,
         Trigger,
@@ -16,7 +17,7 @@ public abstract class ApplyOnCollision : MonoBehaviour
     }
 
     [SerializeField]
-    private CollisionType type = CollisionType.Collision;
+    private CollisionType collisionType = CollisionType.Any;
 
     [SerializeField]
     private bool useLayerMask;
@@ -28,7 +29,7 @@ public abstract class ApplyOnCollision : MonoBehaviour
     private bool useTag;
 
     [SerializeField]
-    private string tag;
+    private string otherTag;
     
     protected virtual void OnCollisionEnter(Collision col)
     {
@@ -64,15 +65,15 @@ public abstract class ApplyOnCollision : MonoBehaviour
 
     protected virtual bool ShouldApply(GameObject otherObj, CollisionType inType)
     {
-        return type == inType 
+        return (collisionType == CollisionType.Any || collisionType == inType) 
             && ShouldApply(otherObj.tag, otherObj.layer);
     }
 
     protected virtual bool ShouldApply(string objTag, int objLayer)
     {
         return (!useLayerMask && !useTag) 
-            || (useLayerMask && ((layerMask & objLayer) != 0))
-            || (useTag && (tag == objTag));
+            || (useLayerMask && ((layerMask.value & 1 << objLayer) != 0))
+            || (useTag && (otherTag == objTag));
     }
 
     protected virtual void Apply(Collision col)

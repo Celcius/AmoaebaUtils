@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AmoaebaUtils;
@@ -20,15 +21,6 @@ public class ParallaxController : MonoBehaviour
     [SerializeField]
     private BoolVector2 wrap = new BoolVector2(true, true);
     
-    
-	[SerializeField]
-	private BooledVector2 ClampWrapMin = new BooledVector2(new BoolVector2(false, false),
-                                                           new Vector2(0,0));
-
-	[SerializeField]
-	private BooledVector2 ClampWrapMax = new BooledVector2(new BoolVector2(false, false),
-                                                           new Vector2(0,0));
-
     [Space]
 
     [Header("Instances")]
@@ -37,7 +29,7 @@ public class ParallaxController : MonoBehaviour
     private Parallaxable parallaxPrefab;
 
     [SerializeField]
-    private Vector2Int copyLayout = new Vector2Int(1,1);
+    public Vector2Int copyLayout = new Vector2Int(1,1);
 
     [SerializeField]
     private BoolVector2 alternate = new BoolVector2(true, true);
@@ -69,6 +61,8 @@ public class ParallaxController : MonoBehaviour
         }
     }
 
+    public Bounds InstanceBounds => parallaxPrefab.GetBounds();
+
     private void Awake() 
     {
         parallaxScroll = Vector2.zero;
@@ -91,7 +85,7 @@ public class ParallaxController : MonoBehaviour
         Vector3 instanceSize = Vector2.zero;
         for(int i = 0; i < CopyAmount; i++)
         {
-            Vector3 position = GetModulatedPosition(i);
+            Vector3 position = GetPositionFromMatrix(GetModulatedIndex(i));
             Parallaxable instance = Instantiate<Parallaxable>(parallaxPrefab, position,
                                                               Quaternion.identity,
                                                               transform);
@@ -115,24 +109,24 @@ public class ParallaxController : MonoBehaviour
         for(int i = 0; i < instantiatedObjects.Count; i++)
         {
             Parallaxable paralaxable = instantiatedObjects[i];
-            Vector3 position = GetModulatedPosition(i) + (Vector3)(Vector2.Scale(parallaxRatio, parallaxScroll));
+            Vector2 modulatedIndex =  GetModulatedIndex(i);
+            Vector3 position = GetPositionFromMatrix(modulatedIndex) + (Vector3)(Vector2.Scale(parallaxRatio, parallaxScroll));
                     
             if(wrap.x || wrap.y)
             {
-                Vector2 paralaxableSize = paralaxable.GetBounds().size/2.0f;
-                Vector2 size = (Vector2)parallaxBounds.size + paralaxableSize;
+                Vector2 paralaxableSize = paralaxable.GetBounds().size;
+                Vector2 size = (Vector2)parallaxBounds.size + paralaxableSize/2.0f;
                 
                 position = new Vector3(wrap.x? position.x-parallaxBounds.min.x : position.x,
                                        wrap.y? position.y-parallaxBounds.min.y : position.y,
                                        position.z);
+                
 
                 if(wrap.x)
                 {
                     position.x = position.x < 0? size.x + position.x % size.x  : position.x;
                     position.x = (position.x) %  size.x + parallaxBounds.min.x;
                     position.x += transform.position.x;
-                    position.x = Mathf.Min(ClampWrapMax.EvaluateX(position.x+paralaxableSize.x)-paralaxableSize.x, position.x);
-                    position.x = Mathf.Max(ClampWrapMin.EvaluateX(position.x-paralaxableSize.x)+paralaxableSize.x, position.x);
                 }
 
                 if(wrap.y)
@@ -140,8 +134,9 @@ public class ParallaxController : MonoBehaviour
                     position.y = position.y < 0? size.y + position.y % size.y  : position.y;
                     position.y = (position.y) %  size.y + parallaxBounds.min.y;
                     position.y += transform.position.y;
-                    position.y = Mathf.Min(ClampWrapMax.EvaluateY(position.y+paralaxableSize.y)-paralaxableSize.y, position.y);
-                    position.y = Mathf.Max(ClampWrapMin.EvaluateY(position.y-paralaxableSize.y)+paralaxableSize.y, position.y);
+
+                    Func<float, float> maxRet = arg => arg + (modulatedIndex.y-1) * paralaxableSize.y;
+                    Func<float, float> minRet = arg => copyLayout.y * paralaxableSize.y + maxRet(arg);
                 }
             }
             else
@@ -152,9 +147,13 @@ public class ParallaxController : MonoBehaviour
         }
     }
 
-    private Vector3 GetModulatedPosition(int i)
+    private Vector2 GetModulatedIndex(int i)
     {
-        Vector2 matrixPos = StructUtils.ModulateMatrixPosition(i, copyLayout, center, alternate);
+        return StructUtils.ModulateMatrixPosition(i, copyLayout, center, alternate);
+    
+    }
+    private Vector3 GetPositionFromMatrix(Vector2 matrixPos)
+    {
         Vector3 position = (Vector3)offset + (Vector3) Vector2.Scale(padding,matrixPos) +
             new Vector3(parallaxPrefab.GetBounds().extents.x*2.0f * matrixPos.x,
                         parallaxPrefab.GetBounds().extents.y*2.0f * matrixPos.y,

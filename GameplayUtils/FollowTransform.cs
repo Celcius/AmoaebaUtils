@@ -10,6 +10,9 @@ public class FollowTransform : MonoBehaviour {
     private TransformVar transformVariable;
 
 	[SerializeField]
+	public Vector3 offset;
+
+	[SerializeField]
 	private BoolVector3  lockPos;
 
 	[SerializeField]
@@ -38,7 +41,7 @@ public class FollowTransform : MonoBehaviour {
 	{
 		Vector3 newPos = new Vector3(lockPos.x? transform.position.x : transformVariable.Value.position.x,
 								     lockPos.y? transform.position.y : transformVariable.Value.position.y,
-									 lockPos.z? transform.position.z : transformVariable.Value.position.z);
+									 lockPos.z? transform.position.z : transformVariable.Value.position.z) + offset;
 		
 		newPos = Vector3.Max(ClampMin.EvaluateVec(newPos), newPos);
 		newPos = Vector3.Min(ClampMax.EvaluateVec(newPos), newPos);

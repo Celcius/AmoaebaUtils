@@ -33,8 +33,54 @@ public static class StructUtils
 }
 
 [Serializable]
+public class BooledType<T>
+{
+     Func<T, T> returnFunc = arg => arg;
+
+    [SerializeField]
+    public bool check;
+    [SerializeField]
+    public T value;
+
+    public bool Check => check;
+    public T Value => value;
+
+    public BooledType(bool check, T value)
+    {
+        this.check = check;
+        this.value = value;
+    }
+
+    public T Evaluate(T onFailCheck)
+    {
+        return Evaluate(onFailCheck, returnFunc);
+    }
+
+    
+    public T Evaluate(T onFailCheck, Func<T,T> retFunc)
+    {
+        return check? retFunc(value) : onFailCheck;
+    }
+}
+
+[Serializable]
+public class BooledInt : BooledType<int> 
+{
+    public BooledInt(bool check, int value) : base(check, value) {}
+}
+
+[Serializable]
+public class BooledFloat : BooledType<float> 
+{
+    public BooledFloat(bool check, float value) : base(check, value) {}
+}
+
+[Serializable]
 public class BooledTypedVector2<V, T> where V : TypedVector2<T>
 {
+
+    Func<T, T> returnFunc = arg => arg;
+
     public BoolVector2 checks;
     public V values;
 
@@ -48,24 +94,44 @@ public class BooledTypedVector2<V, T> where V : TypedVector2<T>
 
     public TypedVector2<T> Evaluate(TypedVector2<T> onFailChecks)
     {
-        return new TypedVector2<T>(EvaluateX(onFailChecks.x),
-                                   EvaluateY(onFailChecks.y));
-    }
-    
-    public T EvaluateX(T onFailCheck)
-    {
-        return checks.x? values.x : onFailCheck;
+        return Evaluate(onFailChecks, returnFunc);
     }
 
+    
+    public TypedVector2<T> Evaluate(TypedVector2<T> onFailChecks, Func<T,T> retFunc)
+    {
+        return new TypedVector2<T>(EvaluateX(onFailChecks.x, retFunc),
+                                   EvaluateY(onFailChecks.y, retFunc));
+    }
+
+    public T EvaluateX(T onFailCheck)
+    {
+        return EvaluateX(onFailCheck, returnFunc);
+    }
+    
     public T EvaluateY(T onFailCheck)
     {
-        return checks.y? values.y : onFailCheck;
+        return EvaluateY(onFailCheck, returnFunc);
+    }
+    
+
+    public T EvaluateX(T onFailCheck, Func<T, T> retFunc)
+    {
+        return checks.x? retFunc(values.x) : onFailCheck;
+    }
+
+    public T EvaluateY(T onFailCheck, Func<T, T> retFunc)
+    {
+        return checks.y? retFunc(values.y) : onFailCheck;
     }
 }
 
 [Serializable]
 public class BooledTypedVector3<V, T> where V : TypedVector3<T>
 {
+    
+    Func<T, T> returnFunc = arg => arg;
+
     public BoolVector3 checks;
     public V values;
 
@@ -74,27 +140,48 @@ public class BooledTypedVector3<V, T> where V : TypedVector3<T>
         this.checks = checks;
         this.values = values;
     }
-
     public TypedVector3<T> Evaluate(TypedVector3<T> onFailChecks)
     {
-        return new TypedVector3<T>(EvaluateX(onFailChecks.x),
-                                   EvaluateY(onFailChecks.y),
-                                   EvaluateZ(onFailChecks.z));
+        return Evaluate(onFailChecks, returnFunc);
+    }
+
+    
+    public TypedVector3<T> Evaluate(TypedVector3<T> onFailChecks, Func<T,T> retFunc)
+    {
+        return new TypedVector3<T>(EvaluateX(onFailChecks.x, retFunc),
+                                   EvaluateY(onFailChecks.y, retFunc),
+                                   EvaluateZ(onFailChecks.y, retFunc));
     }
 
     public T EvaluateX(T onFailCheck)
     {
-        return checks.x? values.x : onFailCheck;
+        return EvaluateX(onFailCheck, returnFunc);
     }
-
+    
     public T EvaluateY(T onFailCheck)
     {
-        return checks.y? values.y : onFailCheck;
+        return EvaluateY(onFailCheck, returnFunc);
     }
-
+        
     public T EvaluateZ(T onFailCheck)
     {
-        return checks.z? values.z : onFailCheck;
+        return EvaluateZ(onFailCheck, returnFunc);
+    }
+    
+
+    public T EvaluateX(T onFailCheck, Func<T, T> retFunc)
+    {
+        return checks.x? retFunc(values.x) : onFailCheck;
+    }
+
+    public T EvaluateY(T onFailCheck, Func<T, T> retFunc)
+    {
+        return checks.y? retFunc(values.y) : onFailCheck;
+    }
+
+    public T EvaluateZ(T onFailCheck, Func<T, T> retFunc)
+    {
+        return checks.z? retFunc(values.z) : onFailCheck;
     }
 }
 

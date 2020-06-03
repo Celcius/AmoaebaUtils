@@ -19,7 +19,7 @@ public class PhysicsAnimationCurve
     public float Duration
     {
         get {
-            return UnityEngineUtils.AnimationCurveDuration(Curve);
+            return UnityEngineUtils.AnimationCurveDuration(Curve)*TimeMultiplier;
         }
     }
 
@@ -44,7 +44,7 @@ public class PhysicsAnimationCurve
             return prevValue;
         }
 
-        elapsedTime = (elapsedTime + TimeOffset)% TimeMultiplier;
+        elapsedTime = (elapsedTime + TimeOffset) / TimeMultiplier;
         float evaluatedValue = Curve.Evaluate(elapsedTime) * AxisMultiplier + Offset;
 
         switch (CurveType)
