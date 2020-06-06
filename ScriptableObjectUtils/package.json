@@ -1,0 +1,13 @@
+{
+  "name": "com.amoaeba.scriptobjutils",
+  "displayName": "ScriptVars",
+  "version": "0.0.1",
+  "unity": "2018.3",
+  "description": "Package for dealing with Scriptable Objects and 'ScriptVar'",
+  "keywords": [
+    "amoeaba",
+    "unity",
+    "Scriptable Objects"
+  ],
+  "dependencies": {}
+}
