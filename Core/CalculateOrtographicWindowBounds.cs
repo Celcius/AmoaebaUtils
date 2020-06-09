@@ -35,9 +35,6 @@ public class CalculateOrtographicWindowBounds : ScriptableObject
         }
 
         Vector2 bounds = UnityEngineUtils.WorldOrthographicSize(newCam);
-        bounds = Input.deviceOrientation == DeviceOrientation.Portrait?
-                 new Vector2(Mathf.Min(bounds.x, bounds.y), Mathf.Max(bounds.x, bounds.y)) : 
-                 new Vector2(Mathf.Max(bounds.x, bounds.y), Mathf.Min(bounds.x, bounds.y));
         windowBounds.Value = bounds;
     }
 }

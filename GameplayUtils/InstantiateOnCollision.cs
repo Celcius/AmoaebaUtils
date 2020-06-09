@@ -9,10 +9,12 @@ public class InstantiateOnCollision : ApplyOnCollision
     [SerializeField]
     private Transform toInstantiate;
 
-    // Start is called before the first frame update
+    [SerializeField]
+    private bool useOtherPos = false;
+
     protected override void Apply(Transform col)
     {
-        GameObject.Instantiate(toInstantiate, transform.position, Quaternion.identity);
+        GameObject.Instantiate(toInstantiate, useOtherPos? col.position : transform.position, Quaternion.identity);
     }
 }
 }
