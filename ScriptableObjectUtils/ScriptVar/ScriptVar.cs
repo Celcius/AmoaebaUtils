@@ -34,16 +34,16 @@ public class ScriptVar<T> : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        Setup();
+        Reset();
     }
 #endif
 
     public void OnEnable()
     {
-        Setup();
+        Reset();
     }
 
-    public void Setup()
+    public void Reset()
     {
         value = setupValue;
     }
