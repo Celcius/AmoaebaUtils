@@ -64,6 +64,13 @@ public class BooledType<T>
 }
 
 [Serializable]
+public class BooledString : BooledType<string> 
+{
+    public BooledString(bool check, string value) : base(check, value) {}
+}
+
+
+[Serializable]
 public class BooledInt : BooledType<int> 
 {
     public BooledInt(bool check, int value) : base(check, value) {}
