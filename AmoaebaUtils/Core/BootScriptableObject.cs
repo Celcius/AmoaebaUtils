@@ -13,7 +13,7 @@ namespace AmoaebaUtils
 {
 public abstract class BootScriptableObject : ScriptableObject
 {
-    protected void Awake()
+    protected virtual void Awake()
     {
         /*
 #if UNITY_EDITOR        

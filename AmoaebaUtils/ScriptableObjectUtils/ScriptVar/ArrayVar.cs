@@ -7,7 +7,7 @@ namespace AmoaebaUtils
 {
 public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
 {
-    private const int INVALID_INDEX = -1;
+    public const int INVALID_INDEX = -1;
 
     public void Add(T component)
     {
