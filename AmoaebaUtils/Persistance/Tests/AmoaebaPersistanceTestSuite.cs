@@ -2,25 +2,19 @@
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using System;
+using MessagePack;
 
 namespace AmoaebaUtils
 {
+
 public class AmoaebaPersistanceTestSuite
 {
     private UserPersistance persistance;
     private bool calledCallback = false;
     private string saveApp = "AmoaebaUtils_TestSuite";
 
-    struct TestStruct
-    {
-        public int x;
-        public string a;
 
-        public bool Same(TestStruct y)
-        {
-            return y.x == x && a.CompareTo(y.a) == 0;
-        }
-    }
 
     [SetUp]
     public void Setup()
@@ -170,117 +164,17 @@ public class AmoaebaPersistanceTestSuite
         yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator TestDefaultStoreRetrieveString()
-    {
-        string toStore ="hey";
-        string key ="key";
-
-        string toStore2 ="hey2";
-        string key2 ="key2";
-
-        string toOverride = "Override";
-
-        Assert.IsFalse(persistance.Contains(key), "Invalid key");
-        Assert.IsFalse(persistance.Contains(key2), "Invalid key");
-        TestInitConditions();
-
-        persistance.LoadDefaultUser();
-        persistance.StoreString(key, toStore);
-        persistance.StoreString(key2, toStore2);
-
-        Assert.IsTrue(persistance.Contains(key), "Invalid key");
-        Assert.IsTrue(persistance.Contains(key2), "Invalid key");
-        
-        Assert.IsTrue(toStore.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-
-        persistance.StoreString(key, toOverride);
-
-        Assert.IsTrue(toOverride.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-    
-        Assert.IsFalse(persistance.HasStoredData(), "Persistance has stored data");
-        Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
-
-        persistance.Save();
-
-        persistance = new UserPersistance(saveApp);
-        persistance.LoadDefaultUser();
-
-        Assert.IsTrue(toOverride.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-    
-        Assert.IsTrue(persistance.HasStoredData(), "Persistance has stored data");
-        Assert.IsTrue(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
-
-        yield return null;
-    }
-
-    
-    [UnityTest]
-    public IEnumerator TestUserStoreRetrieveString()
-    {
-        string user = "User1";
-        string toStore ="hey";
-        string key ="key";
-
-        string toStore2 ="hey2";
-        string key2 ="key2";
-
-        string toOverride = "Override";
-
-        Assert.IsFalse(persistance.Contains(key), "Invalid key");
-        Assert.IsFalse(persistance.Contains(key2), "Invalid key");
-
-        TestInitConditions();
-
-        persistance.LoadUser(user);
-        persistance.StoreString(key, toStore);
-        persistance.StoreString(key2, toStore2);
-
-        Assert.IsTrue(persistance.Contains(key), "Invalid key");
-        Assert.IsTrue(persistance.Contains(key2), "Invalid key");
-        
-        Assert.IsTrue(toStore.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-
-        persistance.StoreString(key, toOverride);
-
-        Assert.IsTrue(toOverride.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-    
-        Assert.IsFalse(persistance.HasStoredData(), "Persistance has stored data");
-        Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
-        Assert.IsFalse(persistance.HasUserStoredData(user), "Persistance has user stored data");
-
-        persistance.Save();
-
-        persistance = new UserPersistance(saveApp);
-        persistance.LoadUser(user);
-
-        Assert.IsTrue(toOverride.CompareTo(persistance.GetString(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-    
-        Assert.IsTrue(persistance.HasStoredData(), "Persistance has stored data");
-        Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
-        Assert.IsTrue(persistance.HasUserStoredData(user), "Persistance has user stored data");
-
-        yield return null;
-    }
 
     [UnityTest]
     public IEnumerator TestDefaultStoreRetrieveValue()
-    {
+{
         string toStore ="hey";
         string key ="key";
 
         int toStore2 = 25;
         string key2 ="key2";
 
-        TestStruct toStore3;
-        toStore3.x = 45;
-        toStore3.a = "asdasd";
+        TestStruct toStore3 = new TestStruct(45, "asdasd");
         string key3 ="key3";
 
         bool toStore4 = true;
@@ -289,9 +183,7 @@ public class AmoaebaPersistanceTestSuite
 
         string toOverride = "Override";
         int toOverride2 = 234;
-        TestStruct toOverride3;
-        toOverride3.x = 23543;
-        toOverride3.a = "asdasf3e";
+        TestStruct toOverride3 = new TestStruct(23543, "asdasf3e");
 
         bool toOverride4 = false;
 
@@ -308,19 +200,19 @@ public class AmoaebaPersistanceTestSuite
         Assert.IsTrue(persistance.Contains(key2), "Invalid key");
         Assert.IsTrue(persistance.Contains(key3), "Invalid key");
         Assert.IsTrue(persistance.Contains(key4), "Invalid key");
+
+        Assert.IsFalse(persistance.HasStoredData(), "Persistance has no stored data");
+        Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
     
         Assert.IsTrue(toStore.CompareTo(persistance.GetValue<string>(key)) == 0, "Invalid store/retrieve");
         Assert.IsTrue(toStore2 == persistance.GetValue<int>(key2), "Invalid store/retrieve");
         Assert.IsTrue(toStore3.Same(persistance.GetValue<TestStruct>(key3)), "Invalid store/retrieve");
         Assert.IsTrue(toStore4 == persistance.GetValue<bool>(key4), "Invalid store/retrieve");
-        
-        Assert.IsFalse(persistance.HasStoredData(), "Persistance has no stored data");
-        Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
 
         persistance.StoreValue<string>(key, toOverride);
         persistance.StoreValue<int>(key2, toOverride2);
         persistance.StoreValue<TestStruct>(key3, toOverride3);
-        persistance.StoreValue<bool>(key3, toOverride4);
+        persistance.StoreValue<bool>(key4, toOverride4);
         persistance.Save();
 
         persistance = new UserPersistance(saveApp);
@@ -332,7 +224,7 @@ public class AmoaebaPersistanceTestSuite
         Assert.IsTrue(toOverride4 == persistance.GetValue<bool>(key4), "Invalid store/retrieve");
 
         Assert.IsTrue(persistance.HasStoredData(), "Persistance has no stored data");
-        Assert.IsTrue(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has no default stored data");
+        Assert.IsTrue(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");
 
         yield return null;
     }
@@ -348,9 +240,7 @@ public class AmoaebaPersistanceTestSuite
         int toStore2 = 25;
         string key2 ="key2";
 
-        TestStruct toStore3;
-        toStore3.x = 45;
-        toStore3.a = "asdasd";
+        TestStruct toStore3 = new TestStruct(45, "asdasd");
         string key3 ="key3";
 
         bool toStore4 = true;
@@ -359,9 +249,7 @@ public class AmoaebaPersistanceTestSuite
 
         string toOverride = "Override";
         int toOverride2 = 234;
-        TestStruct toOverride3;
-        toOverride3.x = 23543;
-        toOverride3.a = "asdasf3e";
+        TestStruct toOverride3 = new TestStruct(23543, "asdasf3e");
 
         bool toOverride4 = false;
 
@@ -409,48 +297,6 @@ public class AmoaebaPersistanceTestSuite
         yield return null;
     }
 
-    [UnityTest]
-    public IEnumerator TestStringToValueStoreRetrieve()
-    {
-        string toStore ="hey";
-        string key ="key";
-
-        string toStore2 = "hey2";
-        string key2 ="key2";
-
-        string toOverride = "bla";
-        string toOverride2 = "bl2";
-
-        TestInitConditions();
-
-        persistance.LoadDefaultUser();
-
-        persistance.StoreString(key, toStore);
-        persistance.StoreValue<string>(key2, toStore2);
-      
-        Assert.IsTrue(persistance.Contains(key), "Invalid key");
-        Assert.IsTrue(persistance.Contains(key2), "Invalid key");
-
-        Assert.IsTrue(toStore.CompareTo(persistance.GetValue<string>(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-
-        
-        persistance.StoreValue<string>(key, toOverride);
-        persistance.StoreString(key2, toOverride2);
-
-        persistance.Save();
-        persistance = new UserPersistance(saveApp);
-        persistance.LoadDefaultUser();
-
-        Assert.IsTrue(persistance.Contains(key), "Invalid key");
-        Assert.IsTrue(toOverride2.Contains(key2), "Invalid key");
-
-        Assert.IsTrue(toOverride.CompareTo(persistance.GetValue<string>(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
-
-        yield return null;
-    }
-
      [UnityTest]
     public IEnumerator TestSwapUser()
     {
@@ -465,21 +311,21 @@ public class AmoaebaPersistanceTestSuite
 
         persistance.LoadDefaultUser();
 
-        persistance.StoreString(key, toStore);
+        persistance.StoreValue<string>(key, toStore);
         persistance.StoreValue<string>(key2, toStore2);
       
         Assert.IsTrue(persistance.Contains(key), "Invalid key");
         Assert.IsTrue(persistance.Contains(key2), "Invalid key");
 
         Assert.IsTrue(toStore.CompareTo(persistance.GetValue<string>(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
+        Assert.IsTrue(toStore2.CompareTo(persistance.GetValue<string>(key2)) == 0, "Invalid store/retrieve");
 
         persistance.LoadUser(user);
         
         Assert.IsFalse(persistance.Contains(key), "Invalid key");
         Assert.IsFalse(persistance.Contains(key2), "Invalid key");
 
-        persistance.StoreString(key, toStore);
+        persistance.StoreValue<string>(key, toStore);
         persistance.StoreValue<string>(key2, toStore2);
         persistance.Save();
 
@@ -494,7 +340,7 @@ public class AmoaebaPersistanceTestSuite
         Assert.IsTrue(persistance.Contains(key2), "Invalid key");
 
         Assert.IsTrue(toStore.CompareTo(persistance.GetValue<string>(key)) == 0, "Invalid store/retrieve");
-        Assert.IsTrue(toStore2.CompareTo(persistance.GetString(key2)) == 0, "Invalid store/retrieve");
+        Assert.IsTrue(toStore2.CompareTo(persistance.GetValue<string>(key2)) == 0, "Invalid store/retrieve");
 
         Assert.IsTrue(persistance.HasStoredData(), "Persistance has no stored data");
         Assert.IsFalse(persistance.HasUserStoredData(UserPersistance.DEFAULT_USER), "Persistance has default stored data");

@@ -1,0 +1,17 @@
+{
+    "name": "ScriptableObjectUtilsEditor",
+    "references": [
+        "GUID:10314cd94b731a74abd9221d57211e4d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

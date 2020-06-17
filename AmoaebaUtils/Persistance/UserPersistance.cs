@@ -5,6 +5,8 @@ using UnityEngine.Assertions;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using MessagePack;
+using MessagePack.Resolvers;
 
 namespace  AmoaebaUtils
 {
@@ -15,20 +17,13 @@ public class UserPersistance
 
     public event UserPersistanceReloaded OnUserPersistanceReloaded;
 
-    [Serializable]
-    private struct SerializableWrapper<T> where T : System.Serializable
-    {
-        public T value;
-    }
-
-
     [System.Serializable]
     private class UserPersistanceStorage
     {
         public string[] keys;
-        public string[] values;
+        public byte[][] values;
 
-        public UserPersistanceStorage(string[] keys, string[] values)
+        public UserPersistanceStorage(string[] keys, byte[][] values)
         {
             this.keys = keys;
             this.values = values;
@@ -45,7 +40,7 @@ public class UserPersistance
     private bool hasLoaded = false;
     public bool HasLoaded => hasLoaded;
 
-    private Dictionary<string, string> cachedStoredData = new Dictionary<string, string>();
+    private Dictionary<string, byte[]> cachedStoredData = new Dictionary<string, byte[]>();
     private BinaryFormatter formatter = new BinaryFormatter();
 
     private string appName;
@@ -76,44 +71,48 @@ public class UserPersistance
         return cachedStoredData.ContainsKey(key);
     }
 
-    public void StoreString(string key, string value)                  
-    {
-       Assert.IsTrue(hasLoaded, "UserPersistance has not loaded");
-        cachedStoredData[key] = value;
-    }
-
-    public string GetString(string key)                  
-    {
-        Assert.IsTrue(hasLoaded, "UserPersistance has not loaded");
-        if(Contains(key))
-        {
-            return cachedStoredData[key];
-        }
-
-        return null;
-    }
-
-    public void StoreValue<T>(string key, T value)                  
+    public bool StoreValue<T>(string key, T value)  
     {
         Assert.IsTrue(hasLoaded, "UserPersistance has not loaded");
 
-        string saveVal = "";
-        Type type = typeof(T);
-        if(type.IsPrimitive)
+        try 
         {
-            saveVal = "" + value;
-        }
-        else if(System.Object.ReferenceEquals(type, typeof(string)))
+            byte[] bytes = MessagePackSerializer.Serialize<T>(value);
+            cachedStoredData[key] = bytes;
+            return true;
+        } 
+        catch(Exception e)
         {
-            saveVal = value as T;
+            Debug.Log("Unable to Store Value " + value);
         }
-        else
-        {
-            saveVal = JsonUtility.ToJson(value);
-        }
-
-        cachedStoredData[key] = saveVal;
+                    return false;
     }
+        /*
+
+            if (value is ScriptableObject)
+            {
+                serializedValue = SerializeValue(JsonUtility.ToJson(value, false));
+            }
+            else serializedValue = SerializeValue(value);
+
+    }
+
+            protected virtual T DeserializeValue<T>(byte[] serializedValue)
+        {
+            if (typeof(ScriptableObject).IsAssignableFrom(typeof(T)))
+            {
+                var jsonValue = MessagePackSerializer.Deserialize<string>(serializedValue);
+
+                object res = ScriptableObject.CreateInstance(typeof(T));
+                JsonUtility.FromJsonOverwrite(jsonValue, res);
+                return (T)res;
+            }
+            else
+            {
+                return MessagePackSerializer.Deserialize<T>(serializedValue);
+
+            }
+        }*/
 
     public T GetValue<T>(string key)
     {
@@ -121,7 +120,7 @@ public class UserPersistance
         return GetValue<T>(key, default(T));
     }     
 
-    public T GetValue<T>(string key, T invalidRet)                  
+    public T GetValue<T>(string key, T invalidRet)             
     {
         Assert.IsTrue(hasLoaded, "UserPersistance has not loaded");
         if(!cachedStoredData.ContainsKey(key))
@@ -129,24 +128,17 @@ public class UserPersistance
             return invalidRet;
         }
 
-        T savedVal = invalidRet;
-        string value = cachedStoredData[key];
-
-        Type type = typeof(T);
-        if(type.IsPrimitive)
+        try 
         {
-            // TODO 
+            byte[] value = cachedStoredData[key];
+            T retVal = MessagePackSerializer.Deserialize<T>(value);
+            return retVal;
         }
-        else if(System.Object.ReferenceEquals(type, typeof(string)))
+        catch(Exception e)
         {
-            savedVal = value;
+            Debug.Log("Unable to Deserialize " + key +" dump: " + e.Message);
         }
-        else
-        {
-            savedVal = JsonUtility.ToJson(value);
-        }
-
-        return savedVal;
+        return invalidRet;
     }
 
     public string GetSavePath(string userId)
@@ -165,8 +157,8 @@ public class UserPersistance
         string[] keys = new string[cachedStoredData.Keys.Count];
         cachedStoredData.Keys.CopyTo(keys,0);
 
-        string[] values = new string[cachedStoredData.Values.Count];
-        cachedStoredData.Values.CopyTo(values,0);
+        byte[][] values = new byte[cachedStoredData.Values.Count][];
+        cachedStoredData.Values.CopyTo(values, 0);
 
         UserPersistanceStorage storage = new UserPersistanceStorage(keys, values);
         
