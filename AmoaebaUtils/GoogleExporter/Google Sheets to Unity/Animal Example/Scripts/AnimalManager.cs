@@ -4,7 +4,6 @@ using GoogleSheetsToUnity;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections.Generic;
-using GoogleSheetsToUnity;
 
 /// <summary>
 /// example script to show realtime updates of multiple items
