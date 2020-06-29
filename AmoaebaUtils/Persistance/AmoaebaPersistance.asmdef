@@ -2,7 +2,7 @@
     "name": "Persistance",
     "references": [
         "GUID:10314cd94b731a74abd9221d57211e4d",
-        "GUID:274ace330c83660bf9d794592a06a80a"
+        "GUID:be5ac39fdee725aee9c1d5ccfbc292fd"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
