@@ -9,7 +9,7 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
 {
     public const int INVALID_INDEX = -1;
 
-    public void Add(T component)
+    public virtual void Add(T component)
     {
         T[] oldValue = value;
         if(value == null || value.Length == 0)
@@ -27,7 +27,7 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
         InvokeChangeEvent(oldValue, value);
     }
 
-    public bool Remove(T component)
+    public virtual bool Remove(T component)
     {
         int index = GetIndexFor(component);
 
@@ -54,7 +54,7 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
         return true;
     }
 
-    public void Clear()
+    public virtual void Clear()
     {
         T[] oldValue = value;
         value = new T[0];
@@ -82,12 +82,12 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
         return INVALID_INDEX;
     }
 
-    public bool Contains(T component)
+    public virtual bool Contains(T component)
     {
         return GetIndexFor(component) != INVALID_INDEX;
     }
 
-    public void Sort(IComparer comparer)
+    public virtual void Sort(IComparer comparer)
     {
         Array.Sort(value, comparer);
     }

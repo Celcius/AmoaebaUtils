@@ -6,7 +6,7 @@ namespace AmoaebaUtils
 {
 public static class MathUtils
 {
-    private static int SumBelow(int n)
+    public static int SumBelow(int n)
     {
         int res = 0;
         for(int i = n; i > 0; i--)
@@ -16,7 +16,7 @@ public static class MathUtils
         return res;
     }
 
-    private static int Factorial(int n)
+    public static int Factorial(int n)
     {
         int res = 1;
         for(int i = n; i > 1; i--)
@@ -25,8 +25,14 @@ public static class MathUtils
         }
         return res;
     }
+
+    public static int NegMod(int x, int m) 
+    {
+        int r = x%m;
+        return r < 0 ? r+m : r;
+    }
     
-    private static float ModulateIndex(float index, float total, bool center, bool alternate)
+    public static float ModulateIndex(float index, float total, bool center, bool alternate)
     {
         int sign = alternate? index % 2 == 0? -1 : 1 : 1;
         float modulatedIndex = alternate? ((int) Mathf.Ceil(index/2.0f)) : index;

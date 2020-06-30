@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d972e96e58716a4f80c36f64eb906df, type: 3}
+  m_Name: LockableSystem
+  m_EditorClassIdentifier: 
+  lockables: {fileID: 11400000, guid: e7cde22da37172b4097bec7de8051046, type: 2}
+  currentlyLocked: {fileID: 11400000, guid: 0665cd62ca78b77409262638eeb5e3d6, type: 2}
+  lockNextOnRemove: 1
