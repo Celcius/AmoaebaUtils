@@ -1,0 +1,19 @@
+{
+    "name": "WalletTests",
+    "references": [
+        "AmoaebaWallet",
+        "UnityEngine.UI.Tests",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
