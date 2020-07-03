@@ -68,7 +68,7 @@ public class SimpleWallet : IWallet
         return registeredProducts.Contains(product);
     }
 
-    public override bool ChangeAmount(IProduct product, int amount, bool canOverflow = false)
+    public override bool ChangeAmount(IProduct product, int amount, bool canOverflow = true)
     {
         if(product == null)
         {
@@ -79,7 +79,7 @@ public class SimpleWallet : IWallet
         return ChangeAmount(product.GetProductId(), amount, canOverflow);
     }
 
-    public override bool ChangeAmount(int productId, int amount, bool canOverflow = false)
+    public override bool ChangeAmount(int productId, int amount, bool canOverflow = true)
     {
         return DeltaOperation(productId, amount, canOverflow);
     }
@@ -94,16 +94,16 @@ public class SimpleWallet : IWallet
 
         ProductAmount stored = productAmounts[productId];
 
-        bool canPerform = canOverflow || delta > 0 || delta >= stored.amount;
+        bool canPerform = canOverflow || delta > 0 || delta > stored.amount;
         
         if(canPerform)
         {
             stored.amount = (uint)(Mathf.Max(stored.amount + delta, 0));
-//            productAmounts[productId] = stored;
+            productAmounts[productId] = stored;
         } 
         else if(!canOverflow)
         {
-            Debug.LogError("Change to product + " + productId +" overflowed negatively");
+            Debug.LogError("Change to product " + productId +" overflowed negatively");
         }
         return canPerform;
     }
@@ -112,8 +112,10 @@ public class SimpleWallet : IWallet
     {
         int len = productAmounts.Keys.Count;
         Dictionary<int, ProductAmount>.KeyCollection keys = productAmounts.Keys;
+        int[] keysArray = new int[len];
+        keys.CopyTo(keysArray,0);
 
-        foreach(int key in keys)
+        foreach(int key in keysArray)
         {
             productAmounts[key] = new ProductAmount(productAmounts[key].product, 0);
         }

@@ -31,8 +31,8 @@ public abstract class IWallet
     
     public abstract uint GetAmount(IProduct product);
     public abstract uint GetAmount(int productId);
-    public abstract bool ChangeAmount(IProduct product, int amount, bool canOverflow = false);
-    public abstract bool ChangeAmount(int productId, int amount, bool canOverflow = false);
+    public abstract bool ChangeAmount(IProduct product, int amount, bool canOverflow = true);
+    public abstract bool ChangeAmount(int productId, int amount, bool canOverflow = true);
 
     public abstract IProduct[] GetProducts();
     public abstract IProduct[] GetOwnedProducts();

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic ;
 using System.Collections;
 
 namespace AmoaebaUtils
