@@ -16,10 +16,10 @@ public abstract class ActionCommandObject
    {
        if(!CanPerformAction())
        {
-           await new Task(()=> { OnActionInterrupt(); });
+           OnActionInterrupt();
            return;
        }
-       await new Task(() => { OnAction(); });
+       OnAction();
    }
 
 }
