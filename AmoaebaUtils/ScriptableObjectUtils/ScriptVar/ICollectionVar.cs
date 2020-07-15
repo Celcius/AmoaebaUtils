@@ -10,5 +10,6 @@ public interface ICollectionVar<T>
     void Clear();
     bool Contains(T component);
     void Sort(IComparer comparer);
+    int Count();
 }
 }

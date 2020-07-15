@@ -277,7 +277,8 @@ public class AmoaebaActionCommandsTestSuite
         Assert.IsTrue(res[2] == 0, "Reached Conclusion with wrong index");
         Assert.IsTrue(res[3] == 880, "Reached Conclusion with wrong index");
         Assert.IsTrue(didEnd, "Reached Conclusion without end callback");
-        Assert.IsTrue(scheduler.GetCommandCount() == 0, "Commands to be executed");   
+        Assert.IsTrue(scheduler.GetCommandCount() == 0, "Commands to be executed");
+           
     }
 }
 }

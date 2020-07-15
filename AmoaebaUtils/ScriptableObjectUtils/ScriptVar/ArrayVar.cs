@@ -91,5 +91,10 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
     {
         Array.Sort(value, comparer);
     }
+
+    public int Count()
+    {
+        return value == null? 0 : value.Length;
+    }
 }
 }

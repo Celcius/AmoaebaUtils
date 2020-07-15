@@ -28,7 +28,7 @@ public class UndrawableGraphic : Graphic
 [CustomEditor(typeof(UndrawableGraphic))]
 public class UndrawableGraphicEditor : Editor
 {
-    public override void OnInspectorGUI()
+    public void OnValidate()
     {
     }
 }
