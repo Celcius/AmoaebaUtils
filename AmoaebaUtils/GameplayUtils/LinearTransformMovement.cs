@@ -18,5 +18,7 @@ public class LinearTransformMovement : TransformMovement
         moveDir =  absoluteMovement? moveDir :  transform.rotation *moveDir;
         transform.position +=  moveDir * Time.deltaTime;
     }
+
+    public override void SetElapsedTime(float elapsed) {}
 }
 }

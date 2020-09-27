@@ -33,8 +33,13 @@ namespace  AmoaebaUtils
         {
             elapsedTime = (elapsedTime + Time.deltaTime) % maxTime;
             transform.position = new Vector3(XCurve.Evaluate(transform.position.x,elapsedTime),
-                                             YCurve.Evaluate(transform.position.x,elapsedTime),
-                                             ZCurve.Evaluate(transform.position.x,elapsedTime));
+                                             YCurve.Evaluate(transform.position.y,elapsedTime),
+                                             ZCurve.Evaluate(transform.position.z,elapsedTime));
+        }
+
+        public override void SetElapsedTime(float elapsed) 
+        {
+            elapsedTime = elapsed % maxTime;
         }
     }
 }

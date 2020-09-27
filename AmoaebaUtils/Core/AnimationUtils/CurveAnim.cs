@@ -38,5 +38,9 @@ public abstract class CurveAnim : MonoBehaviour
 
    protected abstract void OnChange(float evaluatedVal);
 
+   public void SetElapsedTime(float elapsed)
+   {
+       elapsedTime = Mathf.Clamp(elapsed, 0, animationSpeed.Duration);
+   }
 }
 }
