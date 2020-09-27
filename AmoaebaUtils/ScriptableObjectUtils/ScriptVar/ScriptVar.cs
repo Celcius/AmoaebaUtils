@@ -35,7 +35,10 @@ public class ScriptVar<T> : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        Reset();
+        if(!Application.isPlaying)
+        {
+            Reset();            
+        }
     }
 #endif
 
@@ -48,5 +51,4 @@ public class ScriptVar<T> : ScriptableObject
     {
         value = setupValue;
     }
-
 }
