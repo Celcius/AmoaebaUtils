@@ -38,10 +38,19 @@ namespace AmoaebaUtils
             return PointInOval(radiuses, Random.Range(0,360.0f));
         }
 
+
+        // Ratio in Arc 0->1
+        public static float AngleInArc(float arcStartInDegrees, float arcEndInDegrees, float ratioInArc)
+        {
+            float angle = arcStartInDegrees + (arcEndInDegrees - arcStartInDegrees) * Mathf.Clamp01(ratioInArc);
+            return angle;  
+        }
+
         public static Vector2 PointInCircle(float radius, float angleInDegrees)
         {
             return PointInOval(radius, radius, angleInDegrees);
         }
+
 
         public static Vector2 PointInOval(float radiusX, float radiusY, float angleInDegrees)
         {
