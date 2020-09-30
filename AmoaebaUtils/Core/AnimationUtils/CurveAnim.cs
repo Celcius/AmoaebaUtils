@@ -31,9 +31,9 @@ public abstract class CurveAnim : MonoBehaviour
             return;
         }
 
-        elapsedTime = (elapsedTime + Time.deltaTime) % lastInstant;
+        elapsedTime = (elapsedTime + GetDeltaTime()) % lastInstant;
 
-        OnChange(animationSpeed.Evaluate(elapsedTime));
+        OnChange(animationSpeed.Evaluate(0, elapsedTime, GetDeltaTime()));
    }
 
    protected abstract void OnChange(float evaluatedVal);
@@ -41,6 +41,11 @@ public abstract class CurveAnim : MonoBehaviour
    public void SetElapsedTime(float elapsed)
    {
        elapsedTime = Mathf.Clamp(elapsed, 0, animationSpeed.Duration);
+   }
+
+   public virtual float GetDeltaTime()
+   {
+       return Time.deltaTime;
    }
 }
 }

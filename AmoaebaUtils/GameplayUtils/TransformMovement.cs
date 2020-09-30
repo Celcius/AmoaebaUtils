@@ -30,5 +30,9 @@ public abstract class TransformMovement : MonoBehaviour
 
     protected abstract void Move();
     public abstract void SetElapsedTime(float elapsed);
+    public virtual float GetDeltaTime()
+    {
+         return Time.deltaTime;
+    }
 }
 }

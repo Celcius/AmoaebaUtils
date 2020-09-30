@@ -16,7 +16,7 @@ public class LinearTransformMovement : TransformMovement
     {
         Vector3 moveDir = Vector3.Scale(linearMovement, AxisMultipliers);
         moveDir =  absoluteMovement? moveDir :  transform.rotation *moveDir;
-        transform.position +=  moveDir * Time.deltaTime;
+        transform.position +=  moveDir * GetDeltaTime();
     }
 
     public override void SetElapsedTime(float elapsed) {}

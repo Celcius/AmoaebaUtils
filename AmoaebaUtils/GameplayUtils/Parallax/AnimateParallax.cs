@@ -28,8 +28,8 @@ public class AnimateParallax : MonoBehaviour
     {
         elapsedTime = (elapsedTime + Time.deltaTime) % maxTime;
         
-        Vector2 velVec = new Vector2(xVelocityCurve.Evaluate(controller.ParallaxScroll.x, elapsedTime),
-                                     yVelocityCurve.Evaluate(controller.ParallaxScroll.y, elapsedTime));
+        Vector2 velVec = new Vector2(xVelocityCurve.Evaluate(0, controller.ParallaxScroll.x, elapsedTime),
+                                     yVelocityCurve.Evaluate(0, controller.ParallaxScroll.y, elapsedTime));
         controller.ParallaxScroll = velVec;
     }
 }
