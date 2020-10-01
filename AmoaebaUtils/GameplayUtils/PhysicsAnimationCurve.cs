@@ -39,18 +39,18 @@ public class PhysicsAnimationCurve
         }
 
         elapsedTime = (elapsedTime + TimeOffset) / TimeMultiplier;
-        float evaluatedValue = Curve.Evaluate(elapsedTime) * AxisMultiplier + Offset;
+        float evaluatedValue = Curve.Evaluate(elapsedTime);
 
         switch (CurveType)
         {
             case  PhysicsType.None:
                 return prevValue;
             case  PhysicsType.Position:
-                return evaluatedValue;
+                return evaluatedValue * AxisMultiplier + Offset;
             case  PhysicsType.PositionOffset:
-                return prevValue + evaluatedValue*AxisMultiplier;
+                return prevValue + evaluatedValue * AxisMultiplier + Offset;
             case  PhysicsType.Velocity:
-                return prevValue + evaluatedValue * deltaTime*AxisMultiplier;
+                return prevValue + evaluatedValue * deltaTime * AxisMultiplier + Offset;
         }
 
         Debug.LogError("Fell through unexpected switch case at animation curve");

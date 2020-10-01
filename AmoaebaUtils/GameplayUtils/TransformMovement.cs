@@ -16,8 +16,18 @@ public abstract class TransformMovement : MonoBehaviour
         set { canMove = value; }
     } 
 
-    [HideInInspector]
-    public Vector3 AxisMultipliers = new Vector3(1,1,1);
+    protected Vector3 axisMultipliers = Vector3.one;
+    
+    public Vector3 AxisMultipliers
+    {
+        get { return axisMultipliers;}
+        set { SetAxisMultiplier(value); }
+    }
+    
+    public virtual void SetAxisMultiplier(Vector3 axis)
+    {
+        axisMultipliers = axis;
+    }
 
     private void Update()
     {

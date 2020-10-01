@@ -21,6 +21,9 @@ namespace  AmoaebaUtils
         [SerializeField]
         private BoolVector3 inheritRotations = new BoolVector3(false, false, false);
         
+        [SerializeField]
+        public BoolVector3 overrideAxisMultipliers = new BoolVector3(false,false,false);
+
         private float elapsedTime = 0;
         private float maxTime;
 
@@ -29,7 +32,15 @@ namespace  AmoaebaUtils
             maxTime = Mathf.Max(XCurve.Duration,
                                 YCurve.Duration,
                                 ZCurve.Duration);
-                                
+            SetAxisMultiplier(this.AxisMultipliers);
+        }
+
+        public override void SetAxisMultiplier(Vector3 axis)
+        {
+            this.axisMultipliers = axis;
+            XCurve.AxisMultiplier = overrideAxisMultipliers.x? this.AxisMultipliers.x : XCurve.AxisMultiplier;
+            YCurve.AxisMultiplier = overrideAxisMultipliers.y? this.AxisMultipliers.y : YCurve.AxisMultiplier;
+            ZCurve.AxisMultiplier = overrideAxisMultipliers.z? this.AxisMultipliers.z : ZCurve.AxisMultiplier;
         }
         
         protected override void Move()
