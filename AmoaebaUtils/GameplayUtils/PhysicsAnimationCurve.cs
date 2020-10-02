@@ -31,7 +31,7 @@ public class PhysicsAnimationCurve
     public float AxisMultiplier = 1.0f;
     public float TimeMultiplier = 1.0f;
 
-    public float Evaluate(float prevValue, float elapsedTime, float deltaTime)
+    public float Evaluate(float prevValue, float elapsedTime, float deltaTime = 0)
     {
         if(CurveType == PhysicsType.None)
         {
