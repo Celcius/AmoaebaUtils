@@ -13,7 +13,7 @@ public class ScriptVar<T> : ScriptableObject
     [SerializeField]
     protected T value;
 
-    public T Value
+    public virtual T Value
     {
         get { return value; }
         set 
