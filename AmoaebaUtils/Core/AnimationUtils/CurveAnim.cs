@@ -31,7 +31,7 @@ public abstract class CurveAnim : MonoBehaviour
             return;
         }
 
-        elapsedTime = (elapsedTime + GetDeltaTime()) % lastInstant;
+        elapsedTime = elapsedTime + GetDeltaTime();
 
         OnChange(animationSpeed.Evaluate(0, elapsedTime, GetDeltaTime()));
    }

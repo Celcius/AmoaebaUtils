@@ -23,9 +23,16 @@ public class PhysicsAnimationCurve
         }
     }
 
+    public enum WrapMode 
+    {
+        Repeat, 
+        Clamp,
+    }
+
     public AnimationCurve Curve = new AnimationCurve();
     public PhysicsType CurveType = PhysicsType.None;
 
+    public WrapMode wrapMode = WrapMode.Repeat;
     public float Offset = 0.0f;
     public float TimeOffset = 0.0f;
     public float AxisMultiplier = 1.0f;
@@ -39,6 +46,14 @@ public class PhysicsAnimationCurve
         }
 
         elapsedTime = (elapsedTime + TimeOffset) / TimeMultiplier;
+        switch(wrapMode)
+        {
+            case WrapMode.Clamp:
+                elapsedTime = Mathf.Clamp01(elapsedTime);
+                break;
+            case WrapMode.Repeat:
+                break;
+        }
         float evaluatedValue = Curve.Evaluate(elapsedTime);
 
         switch (CurveType)
