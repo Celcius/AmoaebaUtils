@@ -23,7 +23,7 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
     [SerializeField]
     private RegisterType registerType = RegisterType.AwakeOnly;
 
-    private T toRegister = null;
+    private T toRegister;
     bool registered = false;
 
     private void Awake()
