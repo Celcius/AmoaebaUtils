@@ -9,15 +9,88 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
     where T : Component
     where V : ArrayVar<T>
 {
+    public enum RegisterType
+    {
+        AwakeOnly,
+        AwakeDestroy,
+        EnableDisable,
+        AwakeEnableDisable
+    }
+    
     [SerializeField]
     private V ArrayVar;
+
+    [SerializeField]
+    private RegisterType registerType = RegisterType.AwakeOnly;
+
+    private T toRegister = null;
+    bool registered = false;
+
     private void Awake()
     {
-        T toRegister = GetComponent<T>();
+        registered = false;
+
+        if(registerType == RegisterType.AwakeOnly 
+           || registerType == RegisterType.AwakeDestroy
+           || registerType == RegisterType.AwakeEnableDisable)
+        {
+            Register(registerType == RegisterType.AwakeOnly);
+        }
+    }
+
+    private void OnEnable() 
+    {
+        if(registerType == RegisterType.AwakeEnableDisable || registerType == RegisterType.EnableDisable)
+        {
+            Register(false);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if(registerType == RegisterType.AwakeEnableDisable || registerType == RegisterType.EnableDisable)
+        {
+            Unregister();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if(registerType == RegisterType.AwakeDestroy)
+        {
+            Unregister();
+        }
+    }
+
+    private void Register(bool destroyOnRegister)
+    {
+        if(registered)
+        {
+            return;
+        }
+
+        toRegister = GetComponent<T>();
         Assert.IsNotNull(toRegister, "Component not present in RegisterVar " + this.name);
         Assert.IsNotNull(ArrayVar, "ArrayVar not present in RegisterVar " + this.name);
         ArrayVar.Add(toRegister);
-        Destroy(this);
+
+        registered = true;
+
+        if(destroyOnRegister)
+        {
+            Destroy(this);
+        }
+    }
+
+    private void Unregister()
+    {
+        if(!registered || toRegister == null)
+        {
+            return;
+        }
+
+        ArrayVar.Remove(toRegister);
+        registered = false;
     }
 }
 }
