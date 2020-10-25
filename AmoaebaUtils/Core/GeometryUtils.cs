@@ -59,7 +59,7 @@ namespace AmoaebaUtils
 
         public static Vector2 PointInOval(Vector2 radiuses, float angleInDegrees)
         {
-            float angleInRadians = Mathf.Deg2Rad + angleInDegrees;
+            float angleInRadians = Mathf.Deg2Rad * angleInDegrees;
             return new Vector2(radiuses.x * Mathf.Cos(angleInRadians),
                                radiuses.y * Mathf.Sin(angleInRadians));
         }
