@@ -42,12 +42,12 @@ public class ScriptVar<T> : ScriptableObject
     }
 #endif
 
-    public void OnEnable()
+    public virtual void OnEnable()
     {
         Reset();
     }
 
-    public void Reset()
+    public virtual void Reset()
     {
         value = setupValue;
     }
