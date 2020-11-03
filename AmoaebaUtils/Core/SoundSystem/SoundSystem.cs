@@ -35,7 +35,6 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         get { return mainVolume; }
     }
 
-
     [SerializeField]
     private int maxConcurrentSounds = 12;
 
