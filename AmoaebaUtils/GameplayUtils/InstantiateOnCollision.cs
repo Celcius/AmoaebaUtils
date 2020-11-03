@@ -18,10 +18,12 @@ public class InstantiateOnCollision : ApplyOnCollision
     [SerializeField]
     private Vector3 euler;
 
+    protected Transform instantiated;
+
     protected override void Apply(Transform col)
     {
         Vector3 pos = (useOtherPos? col.position : transform.position) + offset;
-        GameObject.Instantiate(toInstantiate, pos, Quaternion.Euler(euler));
+        instantiated = GameObject.Instantiate(toInstantiate, pos, Quaternion.Euler(euler));
     }
 }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,7 +15,8 @@ public class AnimateFrames : MonoBehaviour
 {
     [SerializeField]
     private SpriteRenderer spriteRenderer;
-
+    [SerializeField]
+    private Image image;
     
     [SerializeField]
     private Sprite[] frames;
@@ -29,6 +31,9 @@ public class AnimateFrames : MonoBehaviour
     [SerializeField]
     private bool loop = true;
 
+    [SerializeField]
+    private bool playOnEnable = false;
+
     private IEnumerator playRoutine = null;
     public bool IsPlaying => (playRoutine != null);
 
@@ -37,17 +42,22 @@ public class AnimateFrames : MonoBehaviour
         get 
         { 
             return spriteRenderer == null? 
+                    (image == null?
                     null :
+                    image.sprite) :
                     spriteRenderer.sprite; 
         }
         
         set 
         { 
-            if(spriteRenderer == null)
+            if(spriteRenderer != null)
             {
-                return;
+                spriteRenderer.sprite = value; 
             }
-            spriteRenderer.sprite = value; 
+            if(image != null)
+            {
+                image.sprite = value; 
+            }
         }
     }
 
@@ -79,7 +89,9 @@ public class AnimateFrames : MonoBehaviour
         randomizeStart = isRandomStart;
         loop = isLooping;
 
-        if(randomizeStart && !(frames == null || spriteRenderer == null || frames.Length == 0))
+        if(randomizeStart && !(frames == null || 
+                               (spriteRenderer == null && image == null) || 
+                               frames.Length == 0))
         {
             index = UnityEngine.Random.Range(0, frames.Length-1);
         }
@@ -100,13 +112,22 @@ public class AnimateFrames : MonoBehaviour
         }
         elapsed = 0.0f;
         playRoutine = null;
-        spriteRenderer.sprite = frames.Length > 0 ? frames[0] : spriteRenderer.sprite;
+        
+        if(spriteRenderer != null)
+        {
+            spriteRenderer.sprite = frames.Length > 0 ? frames[0] : spriteRenderer.sprite;
+        }
+
+        if(image != null)
+        {
+            image.sprite = frames.Length > 0 ? frames[0] : image.sprite;
+        }   
     }
 
     // Update is called once per frame
     private IEnumerator PlayRoutine()
     {
-        if(frames == null || spriteRenderer == null || frames.Length == 0)
+        if(frames == null || (spriteRenderer == null && image == null) || frames.Length == 0)
         {
             yield break;
         }
@@ -116,7 +137,7 @@ public class AnimateFrames : MonoBehaviour
             elapsed -= Time.deltaTime;
             if(elapsed <= 0)
             {
-                spriteRenderer.sprite = frames[index];
+                this.Sprite = frames[index];
                 elapsed = frameTime;
                 index = loop? (index +1) % frames.Length : (index +1);
             }
@@ -138,37 +159,28 @@ public class AnimateFrames : MonoBehaviour
 
     protected virtual void FinishedAnimating() {}
 
+    private void OnEnable()
+    {
+        if(playOnEnable)
+        {
+            StartPlaying();
+        }
+    }
+
+
 }
 
 #if UNITY_EDITOR
 
 [CustomEditor(typeof(AnimateFrames))]
 public class AnimateFramesEditor : Editor
-{
+{/*
     private AnimateFrames framesAnimator;
 
     private void OnEnable()
     {
         framesAnimator = (AnimateFrames)target;
     }
-
-    private void OnDisable()
-    {
-        if(framesAnimator == null)
-        {
-            return;
-        }
-        framesAnimator.StopPlaying();
-    }
-
-    private void OnInspectorUpdate()
-    {
-        if(framesAnimator.IsPlaying)
-        {
-            Repaint();
-        }
-    }
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
@@ -191,7 +203,7 @@ public class AnimateFramesEditor : Editor
                 framesAnimator.StartPlaying();
             }
         }
-    }
+    }*/
 }
 #endif
 }
