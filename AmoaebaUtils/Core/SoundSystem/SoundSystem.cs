@@ -19,6 +19,23 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     private List<AudioSource> playingSources;
     private List<SoundDefinition> awaitingSlots;
 
+    [SerializeField, Range(0, 1.0f)]
+    private float mainVolume;
+    public float MainVolume
+    {
+        set  
+        { 
+            mainVolume = Mathf.Clamp01(value);
+            foreach(AudioSource source in playingSources)
+            {
+                source.volume = mainVolume;
+            }
+        }
+
+        get { return mainVolume; }
+    }
+
+
     [SerializeField]
     private int maxConcurrentSounds = 12;
 
@@ -111,6 +128,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
         Assert.IsFalse(runner == null, "Trying to play sound from incorrect source");
         
+        source.volume = mainVolume;
         source.Play();
         runner.StartCoroutine(PlayRoutine(source, clip));
 
