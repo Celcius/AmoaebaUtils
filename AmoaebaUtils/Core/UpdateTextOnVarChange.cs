@@ -20,6 +20,9 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
     
     [SerializeField]
     protected string format = "{0}";
+    
+    [SerializeField]
+    protected bool replaceNewLine = true;
 
     protected virtual void Start()
     {
@@ -40,6 +43,10 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
     private void UpdateLabel(V oldVal, V newVal)
     {
         string newText = GetText(oldVal, newVal);
+        if(replaceNewLine)
+        {
+            newText = newText.Replace("\\n", "\n");
+        }        
         
         if(label != null)
         {
