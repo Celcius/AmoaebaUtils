@@ -13,6 +13,12 @@ public class ScriptVar<T> : ScriptableObject
     [SerializeField]
     protected T value;
 
+    public virtual T SetupValue
+    {
+        get { return setupValue; }
+        set { this.setupValue = value; }
+    }
+
     public virtual T Value
     {
         get { return value; }
