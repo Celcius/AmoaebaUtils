@@ -56,5 +56,11 @@ public static class MathUtils
         v.y = (sin * tx) + (cos * ty);
         return v;
     }
+
+    public static bool GetBit(int i, int bitNumber)
+    {
+        return (i & (1 << bitNumber-1)) != 0;
+    }
+
 }
 }
