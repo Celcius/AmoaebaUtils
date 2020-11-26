@@ -15,9 +15,6 @@ namespace AmoaebaUtils
 [System.Serializable]
 public class FloatVarToSlider : Slider
 {
-
-    public bool useRatio = false;
-
     [SerializeField]
     private FloatVar slideVar;
     public FloatVar SliderVar
@@ -48,7 +45,7 @@ public class FloatVarToSlider : Slider
 
     protected void OnVarChanged(float oldVal, float newVal)
     {
-        this.value = GetValue(newVal);
+        this.value =  GetClampedVal(newVal); 
     }
 
     protected override void OnDestroy()
@@ -71,7 +68,7 @@ public class FloatVarToSlider : Slider
     {
         if(slideVar != null)
         {
-            slideVar.Value = GetRatio(val); 
+            slideVar.Value = GetClampedVal(val); 
             if(storeValue)
             {
                 slideVar.SetupValue = slideVar.Value;
@@ -79,14 +76,9 @@ public class FloatVarToSlider : Slider
         }
     }
 
-    private float GetRatio(float val)
+    private float GetClampedVal(float val)
     {
-        return useRatio?  (val - minValue) / (maxValue - minValue) : val;
-    }
-
-    private float GetValue(float ratio)
-    {
-        return useRatio? (ratio * (maxValue - minValue) + minValue) : ratio;
+        return Mathf.Clamp(val, minValue, maxValue);
     }
 }
 
@@ -111,7 +103,6 @@ public class FloatVarToSliderEditor : SliderEditor
            EditorGUILayout.Space();
 
            FloatVar var = EditorGUILayout.ObjectField("Slider Variable", sliderTarget.SliderVar, typeof(FloatVar), false) as FloatVar;
-           sliderTarget.useRatio = EditorGUILayout.Toggle("Use Ratio", sliderTarget.useRatio);
             
            if(var != sliderTarget.SliderVar)
            {
