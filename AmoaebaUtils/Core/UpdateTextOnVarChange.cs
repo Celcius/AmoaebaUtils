@@ -24,14 +24,47 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
     [SerializeField]
     protected bool replaceNewLine = true;
 
+    [SerializeField]
+    private bool animate = false;
+
+    [SerializeField]
+    private AnimationCurve animationCurve;
+
+    [SerializeField]
+    private Vector3 animationScaleTo;
+    
+    [SerializeField]
+    private Color animationColorTo;
+    private Color startColor;
+    private Vector3 startScale;
+
+    [SerializeField]
+    private bool animateOnStart;
+    private List<Graphic>[] graphics;
+    
+    private IEnumerator animationRoutine = null;
+
     protected virtual void Start()
     {
         if(label == null && TMPLabel == null)
         {
             return;
         }
+       
+
+        if(label != null)
+        {
+            startColor = label.color;
+            startScale = label.transform.localScale;
+        }
+        else
+        {
+            startColor = TMPLabel.color;
+            startScale = TMPLabel.transform.localScale;
+        }
+
         var.OnChange += UpdateLabel;
-        UpdateLabel(var.Value, var.Value);
+        UpdateLabel(var.Value, var.Value, !animateOnStart);
     }
 
     // Update is called once per frame
@@ -40,7 +73,12 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
         var.OnChange -= UpdateLabel;
     }
 
-    private void UpdateLabel(V oldVal, V newVal)
+    protected virtual void UpdateLabel(V oldVal, V newVal)
+    {
+        UpdateLabel(oldVal, newVal, false);
+    }
+
+    protected virtual void UpdateLabel(V oldVal, V newVal, bool ignoreAnimation)
     {
         string newText = GetText(oldVal, newVal);
         if(replaceNewLine)
@@ -57,6 +95,48 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
         {
             TMPLabel.text = newText;
         }
+
+        if(animate && !ignoreAnimation)
+        {
+            if(animationRoutine != null)
+            {
+                StopCoroutine(animationRoutine);
+            }
+            animationRoutine = AnimateRoutine();
+            StartCoroutine(animationRoutine);
+        }
+    }
+    private IEnumerator AnimateRoutine()
+    {
+        if(animationCurve.keys.Length <= 0)
+        {
+            animationRoutine = null;
+            yield break;
+        }
+
+        Graphic animationLabel = (label == null)? (Graphic)TMPLabel : (Graphic)label;
+        Color colorDelta = animationColorTo - animationLabel.color;
+        Vector3 scaleDelta = animationScaleTo - animationLabel.transform.localScale; 
+        Keyframe lastKey = animationCurve.keys[animationCurve.keys.Length-1];
+        float duration = lastKey.time;
+        float toElapse = 0;
+        
+        while(toElapse < duration)
+        {
+            float ratio = toElapse/duration;
+            float val = animationCurve.Evaluate(ratio);
+
+            animationLabel.color = val * colorDelta + startColor;
+            animationLabel.transform.localScale = val * scaleDelta + startScale;
+
+            yield return new WaitForEndOfFrame();
+            toElapse += Time.deltaTime;
+        }
+
+        animationLabel.color = startColor;
+        animationLabel.transform.localScale = startScale;
+
+        animationRoutine = null;
     }
 
     protected virtual string GetText(V oldVal, V newVal)
