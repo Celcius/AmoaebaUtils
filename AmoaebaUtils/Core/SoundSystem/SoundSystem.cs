@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using AmoaebaUtils;
-
+using System;
 
 namespace AmoaebaUtils
 {
@@ -13,6 +13,8 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     {
         public AudioClip clip;
         public string identifier;
+
+        public Action<string> onFinishCallback;
     }
 
     private List<AudioSource> availableSources;
@@ -38,11 +40,8 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     [SerializeField]
     private int maxConcurrentSounds = 12;
 
-    private int instances = 0;
-
     private void OnEnable() 
     {
-        instances = 0;
         availableSources = new List<AudioSource>();
         playingSources = new List<AudioSource>();
         awaitingSlots = new List<SoundDefinition>();
@@ -83,9 +82,9 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         }
     }
 
-    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true)
+    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true, Action<string> onFinishCallback = null)
     {
-        bool hasMaxSources = instances >= maxConcurrentSounds;
+        bool hasMaxSources = availableSources.Count + playingSources.Count >= maxConcurrentSounds;
         
         if(availableSources.Count == 0 && hasMaxSources)
         {
@@ -94,6 +93,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
                 SoundDefinition definition;
                 definition.clip = clip;
                 definition.identifier = identifier;
+                definition.onFinishCallback = onFinishCallback;
                 awaitingSlots.Add(definition);
             }
             return;
@@ -104,15 +104,15 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
             CreateSoundSource();
         }
 
-        Play(clip, identifier);
+        Play(clip, identifier, onFinishCallback);
     }
 
     private void Play(SoundDefinition definition)
     {
-        Play(definition.clip, definition.identifier);
+        Play(definition.clip, definition.identifier, null);
     }
 
-    private void Play(AudioClip clip, string identifier)
+    private void Play(AudioClip clip, string identifier, Action<string> onFinishCallback)
     {
         if(availableSources.Count <= 0)
         {
@@ -120,6 +120,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         }
         AudioSource source = availableSources[0];
         availableSources.Remove(availableSources[0]);
+        playingSources.Add(source);
         source.gameObject.name = identifier;
         source.clip = clip;
 
@@ -129,23 +130,24 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         
         source.volume = mainVolume;
         source.Play();
-        runner.StartCoroutine(PlayRoutine(source, clip));
+        runner.StartCoroutine(PlayRoutine(source, clip, identifier, onFinishCallback));
 
         
     }
 
-    private IEnumerator PlayRoutine(AudioSource source, AudioClip clip)
+    private IEnumerator PlayRoutine(AudioSource source, AudioClip clip, string identifier, Action<string> onFinishCallback)
     {
         float clipLength = clip.length;
         yield return new WaitForSeconds(clipLength);
         OnPlayEnded(source);
+        onFinishCallback?.Invoke(identifier);
     }
 
     private void OnPlayEnded(AudioSource source)
     {
         playingSources.Remove(source);
         availableSources.Add(source);
-
+        source.name = "AvailableSoundSource";
         if(awaitingSlots.Count > 0)
         {
             SoundDefinition definition = awaitingSlots[0];
@@ -157,8 +159,8 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     private void CreateSoundSource()
     {
         CoroutineRunner runner = CoroutineRunner.Instantiate("SoundInstance");
+        runner.name = "AvailableSoundSource";
         availableSources.Add(runner.gameObject.AddComponent<AudioSource>());
-        instances++;
     }
 }
 }
