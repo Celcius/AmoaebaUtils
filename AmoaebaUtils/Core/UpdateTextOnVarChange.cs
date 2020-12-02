@@ -102,11 +102,17 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
             {
                 StopCoroutine(animationRoutine);
             }
-            animationRoutine = AnimateRoutine();
+            animationRoutine = AnimateRoutine(GetAnimationColorTo(oldVal, newVal));
             StartCoroutine(animationRoutine);
         }
     }
-    private IEnumerator AnimateRoutine()
+
+    protected virtual Color GetAnimationColorTo(V oldval, V newVal)
+    {
+        return animationColorTo;
+    }
+    
+    private IEnumerator AnimateRoutine(Color animationColorTo)
     {
         if(animationCurve.keys.Length <= 0)
         {
@@ -114,6 +120,7 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
             yield break;
         }
 
+        animationColorTo.a = 1.0f;
         Graphic animationLabel = (label == null)? (Graphic)TMPLabel : (Graphic)label;
         Color colorDelta = animationColorTo - animationLabel.color;
         Vector3 scaleDelta = animationScaleTo - animationLabel.transform.localScale; 
