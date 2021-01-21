@@ -12,6 +12,25 @@ namespace AmoaebaUtils
 {
 public class FileUtils
 {
+    public static void GenerateFoldersForFile(string pathAndFile)
+    {
+        string directories = "";
+
+        if(pathAndFile[pathAndFile.Length-1] == '/')
+        {
+            directories = pathAndFile;
+        }
+        else
+        {
+            string[] paths = pathAndFile.Split('/');
+            for(int i = 0; i < paths.Length -1; i++)
+            {
+                directories += paths[i] + '/';
+            }
+        }
+
+        GenerateFoldersForPath(directories);
+    }
     public static void GenerateFoldersForPath(string path)
     {
         string[] paths = path.Split('/');

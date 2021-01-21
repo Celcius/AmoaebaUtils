@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor; 
 
+namespace AmoaebaUtils
+{
 public class CreateScriptableObject : ScriptableWizard
 {
     [SerializeField]
@@ -48,4 +50,5 @@ public class CreateScriptableObject : ScriptableWizard
             CreateScriptableObject wizard = ScriptableWizard.DisplayWizard<CreateScriptableObject>("Create Scriptable Objects", "Create");
         }
     }
+}
 }

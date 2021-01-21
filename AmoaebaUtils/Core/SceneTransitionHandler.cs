@@ -28,7 +28,6 @@ public class SceneTransitionHandler : BootScriptableObject
 
         public override void OnBoot()
         {
-            Debug.Log("YUP");
             return;
             Assert.IsTrue(emptyIdentifier != string.Empty, $"emptyIdentifier not assigned to " + this.name);
 

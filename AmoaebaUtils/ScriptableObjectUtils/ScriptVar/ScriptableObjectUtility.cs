@@ -3,6 +3,8 @@ using UnityEditor;
 using System.IO;
 
 #if UNITY_EDITOR
+namespace AmoaebaUtils
+{
 public static class ScriptableObjectUtility
 {
     /// <summary>
@@ -33,14 +35,20 @@ public static class ScriptableObjectUtility
         }
 
         string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + name + ".asset");
+        CreateAssetAtPath(asset,assetPathAndName);
+    }
 
+    public static void CreateAssetAtPath(ScriptableObject asset, string assetPathAndName)
+    {
+        FileUtils.GenerateFoldersForFile(assetPathAndName);
+        
         AssetDatabase.CreateAsset(asset, assetPathAndName);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        EditorUtility.FocusProjectWindow();
         Selection.activeObject = asset;
+        EditorUtility.FocusProjectWindow();
     }
 }
-
+}
 #endif
