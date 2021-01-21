@@ -55,5 +55,65 @@ public static class UnityEngineUtils
     {
         return new Color(1.0f-color.r, 1.0f-color.g, 1.0f-color.b);
     }
+
+    public static string RandomString(int len)
+    {
+        System.Random random = new System.Random();
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        string ret = "";
+        for(int i = 0; i < len; i++)
+        {
+            ret += chars[random.Next(0, chars.Length)]; 
+        }
+        return ret;
+    }
+
+    public static T GetRandomEnumElement<T>() where T : System.Enum
+    {
+        System.Random random = new System.Random();
+        
+        Array elements = System.Enum.GetValues(typeof(T));
+        return (T) elements.GetValue(random.Next(0, elements.Length));
+    }
+
+    public static string[] GetGUIDSForType<T>() where T: UnityEngine.Object
+    {
+        return AssetDatabase.FindAssets("t:" + typeof(T).ToString());
+    }
+
+    public static T[] GetAllOfType<T>() where T : UnityEngine.Object
+    {
+       List<T> objects = new List<T>();
+       string[] guids = GetGUIDSForType<T>();
+       foreach(string guid in guids)
+       {
+           string path = AssetDatabase.GUIDToAssetPath(guid);
+           T entity = AssetDatabase.LoadAssetAtPath<T>(path);
+           if(entity != null)
+           {
+               objects.Add(entity);
+           }
+       }
+       return objects.ToArray();
+    }
+
+#if UNITY_EDITOR     
+
+    public static void SelectFirstObjectOfType<T>() where T : UnityEngine.Object
+    {
+       string[] guids = GetGUIDSForType<T>();
+       foreach(string guid in guids)
+       {
+           string path = AssetDatabase.GUIDToAssetPath(guid);
+           T entity = AssetDatabase.LoadAssetAtPath<T>(path);
+           if(entity != null)
+           {
+               Selection.activeObject = entity;
+               EditorUtility.FocusProjectWindow(); 
+               return;
+           }
+       }
+    }
+#endif
 }
 }

@@ -62,7 +62,7 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
         }
     }
 
-    private void Register(bool destroyOnRegister)
+    public void Register(bool destroyOnRegister = false)
     {
         if(registered)
         {
@@ -76,13 +76,17 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
 
         registered = true;
 
-        if(destroyOnRegister)
+        if(UnityEngineUtils.IsInPlayModeOrAboutToPlay())
         {
-            Destroy(this);
+            if(destroyOnRegister)
+            {
+                Destroy(this);
+            }
         }
+        
     }
 
-    private void Unregister()
+    public void Unregister()
     {
         if(!registered || toRegister == null)
         {
@@ -91,6 +95,7 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
 
         ArrayVar.Remove(toRegister);
         registered = false;
+
     }
 }
 }
