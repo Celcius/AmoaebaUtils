@@ -12,7 +12,7 @@ public abstract class ActionCommandObject
     public virtual float GetWeight() { return DEFAULT_WEIGHT; }
     public virtual bool CanPerformAction() { return true; }
 
-       public async void PerformAction()
+    public async void PerformAction()
    {
        if(!CanPerformAction())
        {

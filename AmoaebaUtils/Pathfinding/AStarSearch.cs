@@ -137,6 +137,11 @@ public class AStarSearch<T>
 
     private void AddOpenNode(AStarSearchNode<T> searchNode)
     {
+        if(openNodes.Contains(searchNode.node) || searchNodes.ContainsKey(searchNode.node))
+        {
+            return;
+        }
+
         searchOpenNodes.Add(searchNode);
         searchNodes.Add(searchNode.node, searchNode);
         openNodes.Add(searchNode.node);

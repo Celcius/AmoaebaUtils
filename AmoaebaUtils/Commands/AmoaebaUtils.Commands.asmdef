@@ -1,10 +1,6 @@
 {
-    "name": "AmoaebaUtils",
-    "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:4ee9d21235d0e2f469a2d474e1bc701d",
-        "GUID:b22a3c3c07f0ec247b1ba82f352cb235"
-    ],
+    "name": "AmoaebaCommands",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
