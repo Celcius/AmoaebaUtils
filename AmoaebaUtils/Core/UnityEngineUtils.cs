@@ -74,6 +74,26 @@ public static class UnityEngineUtils
         return (T) elements.GetValue(random.Next(0, elements.Length));
     }
 
+    public static string CreateAnagram(string word)
+    {
+        string anagram = "";
+        
+        List<int> indexes = new List<int>();
+        for(int i = 0; i < word.Length; i++)
+        {
+            indexes.Add(i);
+        }
+
+        for(int i = 0; i < word.Length; i++)
+        {
+            int index = random.Next(0, indexes.Count);
+            anagram += word[indexes[index]];
+            indexes.RemoveAt(index);
+        }
+
+        return anagram;
+    }
+
 #if UNITY_EDITOR     
 
     public static string[] GetGUIDSForType<T>() where T: UnityEngine.Object
