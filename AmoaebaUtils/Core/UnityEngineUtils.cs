@@ -11,6 +11,7 @@ namespace AmoaebaUtils
 {
 public static class UnityEngineUtils
 {
+    private static System.Random random = new System.Random((int)DateTime.Now.ToBinary());
     public static float AnimationCurveDuration(AnimationCurve curve)
     {
         return (curve.keys.Length == 0)? 0.0f : curve.keys[curve.keys.Length-1].time;
@@ -58,7 +59,6 @@ public static class UnityEngineUtils
 
     public static string RandomString(int len)
     {
-        System.Random random = new System.Random();
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         string ret = "";
         for(int i = 0; i < len; i++)
@@ -69,17 +69,18 @@ public static class UnityEngineUtils
     }
 
     public static T GetRandomEnumElement<T>() where T : System.Enum
-    {
-        System.Random random = new System.Random();
-        
+    {        
         Array elements = System.Enum.GetValues(typeof(T));
         return (T) elements.GetValue(random.Next(0, elements.Length));
     }
+
+#if UNITY_EDITOR     
 
     public static string[] GetGUIDSForType<T>() where T: UnityEngine.Object
     {
         return AssetDatabase.FindAssets("t:" + typeof(T).ToString());
     }
+
 
     public static T[] GetAllOfType<T>() where T : UnityEngine.Object
     {
@@ -97,7 +98,6 @@ public static class UnityEngineUtils
        return objects.ToArray();
     }
 
-#if UNITY_EDITOR     
 
     public static void SelectFirstObjectOfType<T>() where T : UnityEngine.Object
     {
