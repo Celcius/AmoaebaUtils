@@ -17,13 +17,16 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
 
     [SerializeField]
     protected TextMeshProUGUI TMPLabel;
+
+    [SerializeField]
+    protected TextMeshPro TMPGameLabel;
     
     [SerializeField]
     protected string format = "{0}";
 
     protected virtual void Start()
     {
-        if(label == null && TMPLabel == null)
+        if(label == null && TMPLabel == null && TMPGameLabel == null)
         {
             return;
         }
@@ -37,10 +40,15 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
         var.OnChange -= UpdateLabel;
     }
 
-    private void UpdateLabel(V oldVal, V newVal)
+    protected virtual void UpdateLabel(V oldVal, V newVal)
     {
         string newText = GetText(oldVal, newVal);
         
+        SetText(newText);
+    }
+
+    protected void SetText(string newText)
+    {
         if(label != null)
         {
             label.text = newText;
@@ -49,6 +57,11 @@ public class UpdateTextOnVarChange<T, V> : MonoBehaviour
         if(TMPLabel != null)
         {
             TMPLabel.text = newText;
+        }
+
+        if(TMPGameLabel != null)
+        {
+            TMPGameLabel.text = newText;
         }
     }
 
