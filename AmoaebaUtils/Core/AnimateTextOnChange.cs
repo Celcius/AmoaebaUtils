@@ -11,11 +11,8 @@ public class AnimateTextOnChange<T,V> : UpdateTextOnVarChange<T, V> where T : Sc
     [SerializeField]
     private float timePerLetter = 0.02f;
     private int textIndex = 0;
-    private string goalText;
-
     protected override void UpdateLabel(V oldVal, V newVal)
     {
-        goalText = GetText(oldVal, newVal);
         textIndex = 0;
         SetText("");
 
@@ -24,11 +21,11 @@ public class AnimateTextOnChange<T,V> : UpdateTextOnVarChange<T, V> where T : Sc
             StopCoroutine(updateCoroutine);
         }
 
-        updateCoroutine = AnimateText();
+        updateCoroutine = AnimateText(GetText(oldVal, newVal));
         StartCoroutine(updateCoroutine);
     }
 
-    private IEnumerator AnimateText()
+    private IEnumerator AnimateText(string goalText)
     {
         while(textIndex < goalText.Length)
         {
