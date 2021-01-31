@@ -74,6 +74,19 @@ public static class UnityEngineUtils
         return (T) elements.GetValue(random.Next(0, elements.Length));
     }
 
+    public static HashSet<T> GetEnumHash<T>() where T : System.Enum
+    {
+        System.Array all = System.Enum.GetValues(typeof(T));
+    
+        HashSet<T> allHash = new HashSet<T>();
+
+        foreach(T item in all)
+        {
+            allHash.Add(item);
+        }
+        return allHash;
+    }
+
     public static string CreateAnagram(string word)
     {
         string anagram = "";
