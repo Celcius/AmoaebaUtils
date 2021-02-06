@@ -10,6 +10,20 @@ public class AnimateTextOnChange<T,V> : UpdateTextOnVarChange<T, V> where T : Sc
 
     [SerializeField]
     private float timePerLetter = 0.02f;
+    public float TimePerLetter 
+    {
+        get { return timePerLetter; }
+        set { timePerLetter = value; }
+    }
+
+    [SerializeField]
+    private float startDelay = 0.0f;
+    public float StartDelay 
+    {
+        get { return startDelay; }
+        set { startDelay = value; }
+    }
+
     private int textIndex = 0;
     protected override void UpdateLabel(V oldVal, V newVal)
     {
@@ -27,6 +41,11 @@ public class AnimateTextOnChange<T,V> : UpdateTextOnVarChange<T, V> where T : Sc
 
     private IEnumerator AnimateText(string goalText)
     {
+        if(startDelay > 0)
+        {
+            yield return new WaitForSeconds(startDelay);
+        }
+        
         while(textIndex < goalText.Length)
         {
             SetText(goalText.Substring(0,textIndex));

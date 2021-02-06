@@ -110,5 +110,23 @@ namespace AmoaebaUtils
             return RandomPointInBounds(bounds[Random.Range(0,bounds.Count)]);
         }
         
+        public static Vector2Int NormalizedMaxValueVector(Vector2 dir, bool yOnTie = true)
+        {
+            if(dir.x == dir.y)
+            {
+                return Vector2Int.zero;
+            }
+        
+
+            if(Mathf.Abs(dir.x) != Mathf.Abs(dir.y))
+            {
+                return Mathf.Abs(dir.x) > Mathf.Abs(dir.y)? 
+                                Mathf.RoundToInt(Mathf.Sign(dir.x)) * Vector2Int.right 
+                                : Mathf.RoundToInt(Mathf.Sign(dir.y)) * Vector2Int.up;
+            }
+
+            return yOnTie? Mathf.RoundToInt(Mathf.Sign(dir.y)) * Vector2Int.up :
+                           Mathf.RoundToInt(Mathf.Sign(dir.x)) * Vector2Int.right;
+        }
     }
 }

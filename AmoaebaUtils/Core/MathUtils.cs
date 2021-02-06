@@ -31,6 +31,11 @@ public static class MathUtils
         int r = x%m;
         return r < 0 ? r+m : r;
     }
+    public static float NegMod(float x, float m) 
+    {
+        float r = x%m;
+        return r < 0 ? r+m : r;
+    }
     
     public static float ModulateIndex(float index, float total, bool center, bool alternate)
     {
