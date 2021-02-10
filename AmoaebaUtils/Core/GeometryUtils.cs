@@ -46,6 +46,25 @@ namespace AmoaebaUtils
             return angle;  
         }
 
+        public static Vector2[] PointsInCircle(float radius, int points)
+        {
+            if(points <= 0)
+            {
+                return new Vector2[0];
+            }
+
+            Vector2[] ret = new Vector2[points];
+            for(int i = 0; i < points; i++)
+            {
+                float angle = (360.0f /(float)points) * i;
+                ret[i] = PointInCircle(radius, angle);
+            }
+
+            return ret;
+        }
+
+
+
         public static Vector2 PointInCircle(float radius, float angleInDegrees)
         {
             return PointInOval(radius, radius, angleInDegrees);
@@ -127,6 +146,70 @@ namespace AmoaebaUtils
 
             return yOnTie? Mathf.RoundToInt(Mathf.Sign(dir.y)) * Vector2Int.up :
                            Mathf.RoundToInt(Mathf.Sign(dir.x)) * Vector2Int.right;
+        }
+
+        public static bool IsCircleCollision(float circle1X,
+                                             float circle1Y,
+                                             float circle1Radius,
+                                             float circle2X,
+                                             float circle2Y,
+                                             float circle2Radius)
+        {
+            return IsCircleCollision(new Vector2(circle1X, circle1Y),
+                                     circle1Radius,
+                                     new Vector2(circle2X, circle2Y),
+                                     circle2Radius);
+        }
+
+        public static bool IsCircleCollision(Vector2 pos1,
+                                             float radius1,
+                                             Vector2 pos2,
+                                             float radius2)
+        {
+            return Vector2.Distance(pos1, pos2) <= radius1 + radius2;
+        }
+
+        public static bool IsCircleRectCollision(Bounds circleBounds, Bounds rectBounds) 
+        {
+            return IsCircleRectCollision(circleBounds.center.x, 
+                                         circleBounds.center.y,
+                                         circleBounds.size.x,
+                                         rectBounds.center.x,
+                                         rectBounds.center.y,
+                                         rectBounds.size.x,
+                                         rectBounds.size.y);
+        }
+
+        public static bool IsCircleRectCollision(float circleX, 
+                                                 float circleY, 
+                                                 float radius, 
+                                                 float rectX, 
+                                                 float rectY, 
+                                                 float rectWidth, 
+                                                 float rectHeight) 
+        {
+
+            // temporary variables to set edges for testing
+            float testX = circleX;
+            float testY = circleY;
+
+            // which edge is closest?
+            if (circleX < rectX)         testX = rectX;      // test left edge
+            else if (circleX > rectX+rectWidth) testX = rectX+rectWidth;   // right edge
+            if (circleY < rectY)         testY = rectY;      // top edge
+            else if (circleY > rectY+rectHeight) testY = rectY+rectHeight;   // bottom edge
+
+            // get distance from closest edges
+            float distX = circleX-testX;
+            float distY = circleY-testY;
+            float distance = Mathf.Sqrt( (distX*distX) + (distY*distY) );
+
+            // if the distance is less than the radius, collision!
+            if (distance <= radius) 
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
