@@ -107,6 +107,26 @@ public static class UnityEngineUtils
         return anagram;
     }
 
+    // https://answers.unity.com/questions/501893/calculating-2d-camera-bounds.html
+    public static Bounds CameraOrthographicBounds(Camera camera)
+    {
+        float screenAspect = (float)Screen.width / (float)Screen.height;
+        float cameraHeight = camera.orthographicSize * 2;
+        Bounds bounds = new Bounds(
+            camera.transform.position,
+            new Vector3(cameraHeight * screenAspect, cameraHeight, 0));
+        return bounds;
+    }
+
+    public static Bounds CameraOrthographicViewportBounds(Camera camera)
+    {
+        Bounds bounds = CameraOrthographicBounds(camera);
+        Vector3 size = bounds.size;
+        size.Scale(new Vector3(camera.rect.width, camera.rect.height, 1.0f));
+        bounds.size = size;
+        return bounds;
+    }
+
 #if UNITY_EDITOR     
 
     public static string[] GetGUIDSForType<T>() where T: UnityEngine.Object
