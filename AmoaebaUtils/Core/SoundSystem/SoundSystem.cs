@@ -105,9 +105,12 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
         if(availableSources.Count == 0 && !hasMaxSources)
         {
-            CreateSoundSource();
+            int toCreate = maxConcurrentSounds - availableSources.Count - playingSources.Count;
+            for(int i = 0; i < toCreate; i++)
+            {
+                CreateSoundSource();
+            }
         }
-
         Play(clip, identifier, audioGroup, onFinishCallback);
     }
 
