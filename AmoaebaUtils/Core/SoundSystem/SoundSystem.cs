@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Audio;
 using AmoaebaUtils;
 using System;
 
@@ -15,6 +16,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         public string identifier;
 
         public Action<string> onFinishCallback;
+        public AudioMixerGroup audioGroup;
     }
 
     private List<AudioSource> availableSources;
@@ -23,7 +25,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
     [SerializeField, Range(0, 1.0f)]
     private float mainVolume;
-    public float MainVolume
+    public virtual float MainVolume
     {
         set  
         { 
@@ -41,7 +43,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     [SerializeField]
     private int maxConcurrentSounds = 12;
 
-    private void OnEnable() 
+    protected virtual void OnEnable() 
     {
         availableSources = new List<AudioSource>();
         playingSources = new List<AudioSource>();
@@ -83,7 +85,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         }
     }
 
-    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true, Action<string> onFinishCallback = null)
+    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true, AudioMixerGroup audioGroup = null, Action<string> onFinishCallback = null)
     {
         bool hasMaxSources = availableSources.Count + playingSources.Count >= maxConcurrentSounds;
         
@@ -95,6 +97,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
                 definition.clip = clip;
                 definition.identifier = identifier;
                 definition.onFinishCallback = onFinishCallback;
+                definition.audioGroup = audioGroup;
                 awaitingSlots.Add(definition);
             }
             return;
@@ -105,15 +108,15 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
             CreateSoundSource();
         }
 
-        Play(clip, identifier, onFinishCallback);
+        Play(clip, identifier, audioGroup, onFinishCallback);
     }
 
     private void Play(SoundDefinition definition)
     {
-        Play(definition.clip, definition.identifier, null);
+        Play(definition.clip, definition.identifier, definition.audioGroup, null);
     }
 
-    private void Play(AudioClip clip, string identifier, Action<string> onFinishCallback)
+    private void Play(AudioClip clip, string identifier, AudioMixerGroup audioGroup, Action<string> onFinishCallback)
     {
         if(availableSources.Count <= 0)
         {
@@ -124,6 +127,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         playingSources.Add(source);
         source.gameObject.name = identifier;
         source.clip = clip;
+        source.outputAudioMixerGroup = audioGroup;
 
         CoroutineRunner runner = source.GetComponent<CoroutineRunner>();
 
@@ -131,9 +135,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         
         source.volume = mainVolume;
         source.Play();
-        runner.StartCoroutine(PlayRoutine(source, clip, identifier, onFinishCallback));
-
-        
+        runner.StartCoroutine(PlayRoutine(source, clip, identifier, onFinishCallback));   
     }
 
     private IEnumerator PlayRoutine(AudioSource source, AudioClip clip, string identifier, Action<string> onFinishCallback)
