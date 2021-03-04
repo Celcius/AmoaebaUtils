@@ -67,6 +67,18 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         playingSources.Clear();
     }
 
+    public bool IsPlaying(string identifier)
+    {
+        foreach(AudioSource source in playingSources)
+        {
+            if(string.Compare(source.gameObject.name, identifier) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void StopSound(string identifier)
     {
         List<AudioSource> stoppedSources = new List<AudioSource>();
