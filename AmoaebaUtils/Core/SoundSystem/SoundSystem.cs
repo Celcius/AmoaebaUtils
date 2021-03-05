@@ -71,7 +71,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     {
         foreach(AudioSource source in playingSources)
         {
-            if(string.Compare(source.gameObject.name, identifier) == 0)
+            if(string.Compare(source.gameObject.name, identifier) == 0 && source.isPlaying)
             {
                 return true;
             }
