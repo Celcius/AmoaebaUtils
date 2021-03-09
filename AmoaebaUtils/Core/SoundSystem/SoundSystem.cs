@@ -24,6 +24,8 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     private List<AudioSource> playingSources;
     private List<SoundDefinition> awaitingSlots;
 
+    private const string AvailableName = "AvailableSoundSource";
+
     [SerializeField, Range(0, 1.0f)]
     private float mainVolume;
     public virtual float MainVolume
@@ -55,14 +57,15 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     {
         awaitingSlots.Clear();
 
-        foreach(AudioSource source in playingSources)
+        for(int i = 0; i < playingSources.Count; i++)
         {
+            AudioSource source = playingSources[i];
             CoroutineRunner runner = source.GetComponent<CoroutineRunner>();
             Assert.IsFalse(runner == null, "Trying to stop sound from invalid source");
             runner.StopAllCoroutines();
 
             source.Stop();
-            availableSources.Add(source);
+            AddSingleSource(ref source, ref availableSources);
         }
 
         playingSources.Clear();
@@ -83,12 +86,13 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     public void StopSound(string identifier)
     {
         List<AudioSource> stoppedSources = new List<AudioSource>();
-        foreach(AudioSource source in playingSources)
+        for(int i = 0; i < playingSources.Count; i++)
         {
+            AudioSource source = playingSources[i];
             if(source.gameObject.name == identifier)
             {
                 source.Stop();
-                stoppedSources.Add(source);
+                AddSingleSource(ref source, ref stoppedSources);
             }
         }
         
@@ -119,11 +123,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
         if(availableSources.Count == 0 && !hasMaxSources)
         {
-            int toCreate = maxConcurrentSounds - availableSources.Count - playingSources.Count;
-            for(int i = 0; i < toCreate; i++)
-            {
-                CreateSoundSource();
-            }
+            CreateSoundSource();
         }
         Play(clip, identifier, audioGroup, onFinishCallback, loop);
     }
@@ -140,8 +140,17 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
             return;
         }
         AudioSource source = availableSources[0];
+
+        if(source.name != "AvailableSoundSource" || playingSources.Contains(source))
+        {
+            Debug.LogError("Potential override of soundSource " + source.name);
+        }
+
         availableSources.Remove(availableSources[0]);
-        playingSources.Add(source);
+        
+
+        AddSingleSource(ref source, ref playingSources);
+
         source.gameObject.name = identifier;
         source.clip = clip;
         source.outputAudioMixerGroup = audioGroup;
@@ -169,9 +178,10 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
     private void OnPlayEnded(AudioSource source)
     {
+
         playingSources.Remove(source);
-        availableSources.Add(source);
-        source.name = "AvailableSoundSource";
+        AddSingleSource(ref source, ref availableSources);
+        source.name = AvailableName;
         if(awaitingSlots.Count > 0)
         {
             SoundDefinition definition = awaitingSlots[0];
@@ -183,8 +193,16 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     private void CreateSoundSource()
     {
         CoroutineRunner runner = CoroutineRunner.Instantiate("SoundInstance");
-        runner.name = "AvailableSoundSource";
+        runner.name = AvailableName;
         availableSources.Add(runner.gameObject.AddComponent<AudioSource>());
+    }
+
+    private void AddSingleSource(ref AudioSource source, ref List<AudioSource> sources)
+    {
+        if(!sources.Contains(source))
+        {
+            sources.Add(source);
+        }
     }
 }
 }
