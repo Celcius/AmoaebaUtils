@@ -17,6 +17,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
         public Action<string> onFinishCallback;
         public AudioMixerGroup audioGroup;
+        public bool loop;
     }
 
     private List<AudioSource> availableSources;
@@ -97,7 +98,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         }
     }
 
-    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true, AudioMixerGroup audioGroup = null, Action<string> onFinishCallback = null)
+    public void PlaySound(AudioClip clip, string identifier = "", bool skipOnOverload = true, AudioMixerGroup audioGroup = null, Action<string> onFinishCallback = null, bool loop = false)
     {
         bool hasMaxSources = availableSources.Count + playingSources.Count >= maxConcurrentSounds;
         
@@ -110,6 +111,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
                 definition.identifier = identifier;
                 definition.onFinishCallback = onFinishCallback;
                 definition.audioGroup = audioGroup;
+                definition.loop = loop; 
                 awaitingSlots.Add(definition);
             }
             return;
@@ -123,15 +125,15 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
                 CreateSoundSource();
             }
         }
-        Play(clip, identifier, audioGroup, onFinishCallback);
+        Play(clip, identifier, audioGroup, onFinishCallback, loop);
     }
 
     private void Play(SoundDefinition definition)
     {
-        Play(definition.clip, definition.identifier, definition.audioGroup, null);
+        Play(definition.clip, definition.identifier, definition.audioGroup, null, definition.loop);
     }
 
-    private void Play(AudioClip clip, string identifier, AudioMixerGroup audioGroup, Action<string> onFinishCallback)
+    private void Play(AudioClip clip, string identifier, AudioMixerGroup audioGroup, Action<string> onFinishCallback, bool loop)
     {
         if(availableSources.Count <= 0)
         {
@@ -143,6 +145,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         source.gameObject.name = identifier;
         source.clip = clip;
         source.outputAudioMixerGroup = audioGroup;
+        source.loop = loop;
 
         CoroutineRunner runner = source.GetComponent<CoroutineRunner>();
 
@@ -150,7 +153,10 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         
         source.volume = mainVolume;
         source.Play();
-        runner.StartCoroutine(PlayRoutine(source, clip, identifier, onFinishCallback));   
+        if(!loop)
+        {
+            runner.StartCoroutine(PlayRoutine(source, clip, identifier, onFinishCallback));   
+        }
     }
 
     private IEnumerator PlayRoutine(AudioSource source, AudioClip clip, string identifier, Action<string> onFinishCallback)
