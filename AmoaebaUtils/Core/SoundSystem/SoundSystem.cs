@@ -170,6 +170,13 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
 
     private IEnumerator PlayRoutine(AudioSource source, AudioClip clip, string identifier, Action<string> onFinishCallback)
     {
+        if(clip == null)
+        {
+            Debug.LogError("NULL clip " + identifier + " in sound system for source " + source.name);
+            OnPlayEnded(source);
+            onFinishCallback?.Invoke(identifier);
+            yield break;
+        }
         float clipLength = clip.length;
         yield return new WaitForSeconds(clipLength);
         OnPlayEnded(source);
