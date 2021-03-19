@@ -141,7 +141,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
         }
         AudioSource source = availableSources[0];
 
-        if(source.name != "AvailableSoundSource" || playingSources.Contains(source))
+        if(string.Compare(source.name,AvailableName) != 0 || playingSources.Contains(source))
         {
             Debug.LogError("Potential override of soundSource " + source.name);
         }
@@ -187,8 +187,10 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
     {
 
         playingSources.Remove(source);
-        AddSingleSource(ref source, ref availableSources);
         source.name = AvailableName;
+        source.Stop();
+        source.clip = null;
+        AddSingleSource(ref source, ref availableSources);
         if(awaitingSlots.Count > 0)
         {
             SoundDefinition definition = awaitingSlots[0];
