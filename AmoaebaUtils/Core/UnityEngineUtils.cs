@@ -26,7 +26,13 @@ public static class UnityEngineUtils
                  new Vector2(Mathf.Max(bounds.x, bounds.y), Mathf.Min(bounds.x, bounds.y));
         return bounds;
     }
-
+#if UNITY_EDITOR    
+    [MenuItem("Edit/Reset Playerprefs")]
+    public static void DeletePlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+#endif
     public static bool IsInPlayModeOrAboutToPlay()
     {
 #if UNITY_EDITOR        
