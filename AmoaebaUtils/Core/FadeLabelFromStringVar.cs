@@ -7,14 +7,15 @@ namespace AmoaebaUtils
 {
 public class FadeLabelFromStringVar : MonoBehaviour
 {
-    private TextMeshProUGUI label;
+    protected TextMeshProUGUI label;
+
     [SerializeField]
     private StringVar stringVar;
 
     [SerializeField]
-    private float fadeInTime = 2.0f;
+    protected float fadeInTime = 2.0f;
     [SerializeField]
-    private float timeInScreen = 5.0f;
+    protected float timeInScreen = 5.0f;
     private IEnumerator currentRoutine = null;
 
     void Awake()
@@ -61,7 +62,7 @@ public class FadeLabelFromStringVar : MonoBehaviour
         StartCoroutine(currentRoutine);
     }
 
-    private IEnumerator FadeTo(float goal)
+    protected virtual IEnumerator FadeTo(float goal)
     {
         float delta = (goal - label.alpha) / fadeInTime;
         float elapsed = 0;
