@@ -92,6 +92,7 @@ public class SoundSystem : SingletonScriptableObject<SoundSystem>
             if(source.gameObject.name == identifier)
             {
                 source.Stop();
+                source.GetComponent<CoroutineRunner>().StopAllCoroutines();
                 AddSingleSource(ref source, ref stoppedSources);
             }
         }
