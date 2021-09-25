@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,23 +8,59 @@ namespace AmoaebaUtils
 public class ScriptVarTrigger<T,V> : MonoBehaviour where V : ScriptVar<T>
 {
     [SerializeField]
-    private V var;
+    protected V var;
 
     [SerializeField]
-    private T valueOnCollision;
+    protected T valueOnCollision;
 
     [SerializeField]
-    private bool shootOnce = true;
-    private bool hasShot;
+    protected bool shootOnce = true;
+    protected bool hasShot;
 
     private void OnTriggerEnter(Collider other) 
     {
+        if(!CheckValidity(other, true))
+        {
+            return;
+        }
         OnTrigger();
     }
 
     private void OnTriggerEnter2D(Collider2D other) 
     {
+        if(!CheckValidity(other, true))
+        {
+            return;
+        }
         OnTrigger();
+    }
+
+    private void OnTriggerExit2D(Collider2D other) 
+    {
+        if(!CheckValidity(other, false))
+        {
+            return;
+        }
+        OnTriggerExit();
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        if(!CheckValidity(other, false))
+        {
+            return;
+        }
+        OnTriggerExit();
+    }
+
+    protected virtual bool CheckValidity(Collider other, bool isEnter)
+    {
+        return true;
+    }
+
+    protected virtual bool CheckValidity(Collider2D other, bool isEnter)
+    {
+        return true;
     }
 
     public virtual void OnTrigger()
@@ -34,6 +71,11 @@ public class ScriptVarTrigger<T,V> : MonoBehaviour where V : ScriptVar<T>
         }
         var.Value = valueOnCollision;
         hasShot = true;
+    }
+
+    public virtual void OnTriggerExit()
+    {     
+
     }
 }
 }
