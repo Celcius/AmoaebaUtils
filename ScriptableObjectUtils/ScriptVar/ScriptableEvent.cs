@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class ScriptableEvent : ScriptableObject
+public abstract class ScriptableEvent : ScriptableObject
 {
 }
