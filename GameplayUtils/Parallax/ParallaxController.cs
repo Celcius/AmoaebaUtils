@@ -149,7 +149,7 @@ public class ParallaxController : MonoBehaviour
 
     private Vector2 GetModulatedIndex(int i)
     {
-        return StructUtils.ModulateMatrixPosition(i, copyLayout, center, alternate);
+        return StructUtils.Modulate2DMatrixIndex(i, copyLayout, center, alternate);
     
     }
     private Vector3 GetPositionFromMatrix(Vector2 matrixPos)

@@ -11,7 +11,7 @@ namespace AmoaebaUtils
 {
 public static class StructUtils
 {
-    public static Vector2 ModulateMatrixPosition(float index, Vector2Int layout, BoolVector2 center, BoolVector2 alternate)
+    public static Vector2 Modulate2DMatrixIndex(float index, Vector2Int layout, BoolVector2 center, BoolVector2 alternate)
     {
         float x = ModulateVectorPosition(index % layout.x, layout.x, center.x,alternate.x);
         float y = ModulateVectorPosition((int)index / layout.x, layout.y , center.y, alternate.y);
