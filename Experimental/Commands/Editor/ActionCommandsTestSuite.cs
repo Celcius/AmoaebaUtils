@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AmoaebaUtils
 {
 
-public class AmoaebaActionCommandsTestSuite
+public class ActionCommandsTestSuite
 {
     public class TestCommandObject : ActionCommandObject
     {

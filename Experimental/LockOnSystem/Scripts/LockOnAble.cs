@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lockable : MonoBehaviour
+public class LockOnAble : MonoBehaviour
 {
     public int LockedIndex;
 
-    public bool IsLockedOn => LockableSystem.Instance.IsLocked(this);
+    public bool IsLockedOn => LockOnSystem.Instance.IsLocked(this);
 
     void Awake()
     {
-        LockableSystem.Instance.Add(this);
+        LockOnSystem.Instance.Add(this);
     }
 
     void OnDestroy()
     {
-        LockableSystem.Instance.Remove(this);
+        LockOnSystem.Instance.Remove(this);
     }
 
     public virtual bool CanLock() { return true; }

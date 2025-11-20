@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmoaebaUtils;
 
-public class LockableSystem : SingletonScriptableObject<LockableSystem>
+public class LockOnSystem : SingletonScriptableObject<LockOnSystem>
 {
     [SerializeField]
-    private LockableArrayVar lockables;
+    private LockOnAbleArrayVar lockables;
 
     [SerializeField]
-    private LockableVar currentlyLocked;
+    private LockOnAbleVar currentlyLocked;
 
     [HideInInspector]
     public bool LockNextOnRemove = true;
@@ -19,7 +19,7 @@ public class LockableSystem : SingletonScriptableObject<LockableSystem>
         Clear();
     }
 
-    public bool IsLocked(Lockable lockable)
+    public bool IsLocked(LockOnAble lockable)
     {
         return GetLocked() == lockable;
     }
@@ -29,7 +29,7 @@ public class LockableSystem : SingletonScriptableObject<LockableSystem>
         return GetLocked() != null;
     }
 
-    public Lockable GetLocked()
+    public LockOnAble GetLocked()
     {
         return currentlyLocked.Value;
     }
@@ -55,7 +55,7 @@ public class LockableSystem : SingletonScriptableObject<LockableSystem>
         }
     }
 
-    public void Remove(Lockable lockable)
+    public void Remove(LockOnAble lockable)
     {
         if(GetLocked() == lockable)
         {
@@ -69,7 +69,7 @@ public class LockableSystem : SingletonScriptableObject<LockableSystem>
         lockables.Remove(lockable);
     }
 
-    public void Add(Lockable lockable)
+    public void Add(LockOnAble lockable)
     {
         lockables.Add(lockable);
     }
@@ -97,7 +97,7 @@ public class LockableSystem : SingletonScriptableObject<LockableSystem>
             lockables.SortByDistance(lockAnchor);
         }
         
-        Lockable newLock = null;
+        LockOnAble newLock = null;
 
         for(int nextOffset = offset, iterations = 0; 
             iterations < lockables.Value.Length; 

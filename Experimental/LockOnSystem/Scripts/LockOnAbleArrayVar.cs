@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmoaebaUtils;
 
-public class LockableArrayVar : ArrayVar<Lockable>
+public class LockOnAbleArrayVar : ArrayVar<LockOnAble>
 {
-    public Lockable GetNextByOffset(Lockable fromLocked, int offset)
+    public LockOnAble GetNextByOffset(LockOnAble fromLocked, int offset)
     {
         if(value.Length == 0)
         {
@@ -30,13 +30,13 @@ public class LockableArrayVar : ArrayVar<Lockable>
         this.Sort(new LockableArrayComparer(anchorPos));
     }
 
-    public override void Add(Lockable component)
+    public override void Add(LockOnAble component)
     {
         base.Add(component);
         UpdateIndexes();
     }
 
-    public override bool Remove(Lockable component)
+    public override bool Remove(LockOnAble component)
     {
         component.LockedIndex = INVALID_INDEX;
         bool ret = base.Remove(component);
@@ -57,7 +57,7 @@ public class LockableArrayVar : ArrayVar<Lockable>
     
     public override void Clear()
     {
-        foreach(Lockable component in value)
+        foreach(LockOnAble component in value)
         {
             component.LockedIndex = INVALID_INDEX;
         }
@@ -75,8 +75,8 @@ public class LockableArrayVar : ArrayVar<Lockable>
 
         int IComparer.Compare(object a, object b)
         {
-            Lockable lockable1 = (Lockable)a;
-            Lockable lockable2 = (Lockable)b;
+            LockOnAble lockable1 = (LockOnAble)a;
+            LockOnAble lockable2 = (LockOnAble)b;
 
             if(lockable1 == null && lockable2 == null)
             {

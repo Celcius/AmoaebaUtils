@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,12 +13,12 @@ public static class StructUtils
 {
     public static Vector2 Modulate2DMatrixIndex(float index, Vector2Int layout, BoolVector2 center, BoolVector2 alternate)
     {
-        float x = ModulateVectorPosition(index % layout.x, layout.x, center.x,alternate.x);
-        float y = ModulateVectorPosition((int)index / layout.x, layout.y , center.y, alternate.y);
+        float x = ModulateIndex(index % layout.x, layout.x, center.x,alternate.x);
+        float y = ModulateIndex((int)index / layout.x, layout.y , center.y, alternate.y);
         return new Vector2(x,y);
     }
 
-    public static float ModulateVectorPosition(float index, int total, bool center, bool alternate)
+    public static float ModulateIndex(float index, int total, bool center, bool alternate)
     {
         int sign = alternate? index % 2 == 0? -1 : 1 : 1;
         float modulatedIndex = alternate? ((int) Mathf.Ceil(index/2.0f)) : index;
