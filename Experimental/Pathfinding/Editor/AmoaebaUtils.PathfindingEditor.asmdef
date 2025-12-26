@@ -1,9 +1,13 @@
 {
     "name": "PathfindingEditor",
+    "rootNamespace": "",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:0acc523941302664db1f4e527237feb3",
-        "GUID:4ee9d21235d0e2f469a2d474e1bc701d"
+        "GUID:4ee9d21235d0e2f469a2d474e1bc701d",
+        "GUID:ba345bee4f2ff284db13dbfe6fd8074e",
+        "GUID:f2dea71b98a9df044991dec8fb9353cf",
+        "GUID:572d10030ec38904196f18748067e2b8"
     ],
     "includePlatforms": [
         "Editor"
