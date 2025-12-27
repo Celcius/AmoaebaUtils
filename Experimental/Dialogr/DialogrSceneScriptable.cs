@@ -4,6 +4,9 @@ using System;
 using NUnit.Framework;
 using UnityEngine.UI;
 
+namespace Dialogr
+{
+
 [CreateAssetMenu(fileName = "DialogrScene", menuName = "Dialogr/Empty Dialogr Scene Scriptable", order = 100)]
 public class DialogrSceneScriptable : ScriptableObject, DialogrScene
 {
@@ -64,8 +67,8 @@ public class DialogrSceneScriptable : ScriptableObject, DialogrScene
 
     private void OnDisable()
     {
-        SpeechNodesDict.Clear();
-        DataEntriesDict.Clear();       
+        SpeechNodesDict?.Clear();
+        DataEntriesDict?.Clear();       
     }
 
 
@@ -146,4 +149,5 @@ public class DialogrSceneScriptable : ScriptableObject, DialogrScene
 
         return  "Node {  Title: '"+ DialogTitle + "'\n  StartNode: '"+StartNode+"'\n  Data: '"+entriesStr+ "' \n Nodes:\n"+nodeStr+"}";
     }
+}
 }

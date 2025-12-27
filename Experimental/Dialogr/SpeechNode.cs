@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
 
@@ -20,13 +21,18 @@ public class SpeechNode
     [SerializeField]
     private SpeechOptions[] _options;
     public SpeechOptions[] Options => _options;
+    
+    [SerializeField]
+    private MetaAction[] _metaActions;
+    public MetaAction[] MetaActions => _metaActions;
 
-    public SpeechNode(string Title, string Text, string[] Tags, SpeechOptions[] Options)
+    public SpeechNode(string Title, string Text, string[] Tags, SpeechOptions[] Options, MetaAction[] MetaActions)
     {
         this._title = Title;
         this._text = Title;
         this._tags = Tags;
         this._options = Options;
+        this._metaActions = MetaActions;
     }
 
     public override string ToString() 
@@ -65,5 +71,30 @@ public struct SpeechOptions
     public override string ToString()
     {
         return displayText + " => " + destinationNode;
+    }
+}
+
+[Serializable]
+public struct MetaAction 
+{
+    [SerializeField]
+    public string Action;
+    [SerializeField]
+    public string[] Values;
+
+    public MetaAction( string action, string[] values ) {
+        this.Action = action;
+        this.Values = values;
+    }
+
+    public override string ToString()
+    {
+        string valuesStr = "";
+        foreach(string value in Values)
+        {
+            valuesStr += value +",";
+        }
+        valuesStr = valuesStr.Substring(0, valuesStr.Length-1);
+        return Action + " => " + valuesStr;
     }
 }

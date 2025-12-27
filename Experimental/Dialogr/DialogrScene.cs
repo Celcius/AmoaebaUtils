@@ -8,6 +8,8 @@ using NUnit.Framework.Constraints;
 using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 
+namespace Dialogr
+{
 public interface DialogrScene
 {
     public const string START_NODE_TAG = "START";
@@ -27,4 +29,5 @@ public interface DialogrScene
     public SpeechNode GetStartNode();
 
     public string ToString();
+}
 }

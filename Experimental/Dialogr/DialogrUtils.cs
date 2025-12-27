@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Codice.Client.Common.TreeGrouper;
 using NUnit.Framework;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEditor.SearchService;
+
+namespace Dialogr
+{
 
 public static class DialogrUtils
 {
@@ -139,7 +143,29 @@ public static class DialogrUtils
         string tags = tagsPresent? 
         nodeText.Substring(titleEnd+TAG_START.Length, header.Length - (titleEnd + TAG_START.Length + TAG_END.Length))
             : "";
-        List<string> tagsList = new List<string>( tags.Split( new string[] { "," }, StringSplitOptions.None ) );  
+        List<string> tagsList = new List<string>( tags.Split( new string[] { "," }, StringSplitOptions.None ) );
+
+        // Extract Meta Actions
+        const string META_ACTION_START = "!";
+        const string META_ACTION_DIVIDER = ":";
+        List<MetaAction> metaActionsList = new List<MetaAction>();
+        HashSet<string> metaActionsValidation = new HashSet<string>();
+        for(int i = tagsList.Count-1; i >= 0; i--)
+        {
+            string tag = tagsList[i];
+            if(tag.StartsWith(META_ACTION_START))
+            {
+                tag = tag.Substring(META_ACTION_START.Length, tag.Length-META_ACTION_START.Length);
+                tagsList.RemoveAt(i);
+                List<string> actionElements = new List<string>(tag.Split(new string[] { META_ACTION_DIVIDER }, StringSplitOptions.None));
+                Assert.True(actionElements.Count > 1, "Invalid amount of actionElements in node " + title);
+                
+                string key = actionElements[0];
+                actionElements.RemoveAt(0);
+                Assert.False(metaActionsValidation.Contains(key), "Action already present in node " + title);
+                metaActionsList.Add(new MetaAction(key, actionElements.ToArray())); 
+            }
+        }
 
         // Extract Text and Options
         List<SpeechOptions> options = new List<SpeechOptions>();
@@ -165,7 +191,7 @@ public static class DialogrUtils
         }
         text = text.Trim();
 
-        return new SpeechNode(title, text, tagsList.ToArray(), options.ToArray());
+        return new SpeechNode(title, text, tagsList.ToArray(), options.ToArray(), metaActionsList.ToArray());
     }
 
     public static bool ValidateNode(SpeechNode node)
@@ -189,4 +215,5 @@ public static class DialogrUtils
     }
 
 
+}
 }

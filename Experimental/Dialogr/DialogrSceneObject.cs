@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Codice.Client.Common.TreeGrouper;
 using UnityEngine;
  
+namespace Dialogr
+{
 public class DialogrSceneObject : DialogrScene 
 {
     protected string DialogTitle;
@@ -77,4 +79,5 @@ public class DialogrSceneObject : DialogrScene
 
         return  "Node {  Title: '"+ DialogTitle + "'\n  StartNode: '"+StartNode+"'\n  Data: '"+entriesStr+ "' \n Nodes:\n"+nodeStr+"}";
     }
+}
 }

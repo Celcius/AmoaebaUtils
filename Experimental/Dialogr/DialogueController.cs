@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static DialogrScene;
+using static Dialogr.DialogrScene;
  
+namespace Dialogr
+{
 public class DialogueController : MonoBehaviour {
  
     [SerializeField] TextAsset twineText;
@@ -33,4 +35,5 @@ public class DialogueController : MonoBehaviour {
         curNode = nextNode;
         onEnteredNode( nextNode );
     }
+}
 }

@@ -4,6 +4,8 @@ using AmoaebaUtils;
 using NUnit.Framework;
 using System.Collections.Generic;
 
+namespace Dialogr
+{
 public class LoadTwineToDialogrScene : ScriptableWizard
 {
     [SerializeField]
@@ -73,4 +75,5 @@ public class LoadTwineToDialogrScene : ScriptableWizard
             ScriptableObjectUtility.CreateAssetAtPath(scriptable, directory+"/"+asset.name+ ".asset");    
         }
     }
+}
 }
