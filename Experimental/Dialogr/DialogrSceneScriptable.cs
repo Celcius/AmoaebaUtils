@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using NUnit.Framework;
+using UnityEngine.UI;
 
+[CreateAssetMenu(fileName = "DialogrScene", menuName = "Dialogr/Empty Dialogr Scene Scriptable", order = 100)]
 public class DialogrSceneScriptable : ScriptableObject, DialogrScene
 {
     [Serializable]
@@ -59,16 +62,20 @@ public class DialogrSceneScriptable : ScriptableObject, DialogrScene
         }
     }
 
-    private void Osable()
+    private void OnDisable()
     {
         SpeechNodesDict.Clear();
         DataEntriesDict.Clear();       
     }
 
 
-    public void InitializeAsset(TextAsset twineText) 
+    public void InitializeAsset(UnityEngine.Object twineText) 
     {
-        DialogrUtils.ParseTwineText( twineText.text, this);
+        if (twineText is TextAsset textAsset)
+        {
+            Assert.True(textAsset != null, "Text Asset is null - " + twineText.name);
+            DialogrUtils.ParseTwineText( textAsset.text, this);
+        }
     }
     
     public void SetTitle(string title)
