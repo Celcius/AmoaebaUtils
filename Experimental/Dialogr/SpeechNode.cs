@@ -1,19 +1,32 @@
+using System;
 using UnityEngine;
 
 
+[Serializable]
 public class SpeechNode 
 {
-    public string Title {get;}
+    [SerializeField]
+    private string _title;
+    public string Title => _title;
+
+    [SerializeField]
+    private string _text;
     public string Text {get;}
-    public string[] Tags {get;}
-    public SpeechOptions[] Options {get;}
+
+    [SerializeField]
+    private string[] _tags;
+    public string[] Tags => _tags;
+
+    [SerializeField]
+    private SpeechOptions[] _options;
+    public SpeechOptions[] Options => _options;
 
     public SpeechNode(string Title, string Text, string[] Tags, SpeechOptions[] Options)
     {
-        this.Title = Title;
-        this.Text = Title;
-        this.Tags = Tags;
-        this.Options = Options;
+        this._title = Title;
+        this._text = Title;
+        this._tags = Tags;
+        this._options = Options;
     }
 
     public override string ToString() 
@@ -36,9 +49,12 @@ public class SpeechNode
     }
 }
 
+[Serializable]
 public struct SpeechOptions 
 {
+    [SerializeField]
     public string displayText;
+    [SerializeField]
     public string destinationNode;
 
     public SpeechOptions( string display, string destination ) {
