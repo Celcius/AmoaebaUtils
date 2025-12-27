@@ -1,0 +1,17 @@
+Dialogr is a Twine integration for unity
+
+This system was started by taking strong inspiration on
+https://www.youtube.com/watch?v=cmafUgj1cu8
+
+It uses the Entweedle format which has an MIT License
+Developed by by Michael McCollum https://x.com/gnustoboz
+Format in:
+https://maximumverbosity.net/twine/Entweedle/format.js
+Also backed up to EntweedleFormatBackup.js
+
+
+Save your .Twee file as .txt
+
+Options are exported as [[ and ]], so normal text cannot have these special characters
+Only a single empty Option is allowed as it means its a transition.
+
