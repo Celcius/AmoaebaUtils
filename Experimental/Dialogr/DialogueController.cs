@@ -6,7 +6,7 @@ using static DialogrScene;
 public class DialogueController : MonoBehaviour {
  
     [SerializeField] TextAsset twineText;
-    Dialogue curDialogue;
+    DialogrSceneObject curDialogue;
     SpeechNode curNode;
  
     public delegate void NodeEnteredHandler( SpeechNode node );
@@ -17,17 +17,18 @@ public class DialogueController : MonoBehaviour {
     }
  
     public void InitializeDialogue() {
-        curDialogue = new Dialogue( twineText );
+        curDialogue = new DialogrSceneObject( twineText );
         curNode = curDialogue.GetStartNode();
-        onEnteredNode( curNode );
+        onEnteredNode?.Invoke( curNode );
+        Debug.Log(curDialogue.ToString());
     }
  
-    public List<SpeechOptions> GetCurrentResponses() {
-        return curNode.options;
+    public SpeechOptions[] GetCurrentResponses() {
+        return curNode.Options;
     }
  
     public void ChooseResponse( int responseIndex ) {
-        string nextNodeID = curNode.options[responseIndex].destinationNode;
+        string nextNodeID = curNode.Options[responseIndex].destinationNode;
         SpeechNode nextNode = curDialogue.GetNode(nextNodeID);
         curNode = nextNode;
         onEnteredNode( nextNode );
