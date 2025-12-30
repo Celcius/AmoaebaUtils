@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19073bcc370abcf4d9261fb7fd34c117, type: 3}
+  m_Name: Prototype
+  m_EditorClassIdentifier: AmoaebaUtils.Dialogr::Dialogr.DialogrSceneScriptable
+  DialogTitle: Prototype
+  NodesArray:
+  - _title: Acceptance
+    _text: Aww that's nice you have a good day
+    _tags:
+    - END
+    _options:
+    - displayText: 'Restart '
+      destinationNode: Start
+    _metaActions:
+    - Action: character
+      Values:
+      - Runt
+  - _title: Rejection
+    _text: "How is that possible!?? \nThose poor penguins"
+    _tags:
+    - END
+    _options:
+    - displayText: 'Restart '
+      destinationNode: Start
+    _metaActions:
+    - Action: character
+      Values:
+      - Runt
+  - _title: Start
+    _text: Hows the weather over there
+    _tags:
+    - START
+    - TEST
+    _options:
+    - displayText: Too Cold for Penguins
+      destinationNode: Rejection
+    - displayText: Warm and fuzzy
+      destinationNode: Acceptance
+    _metaActions:
+    - Action: character
+      Values:
+      - Boss
+  StartNode: Start
+  DataEntries:
+  - Key: ifid
+    Value: 65C60489-8942-4D46-A85F-9B0FFC12C594
+  - Key: format
+    Value: Harlowe
+  - Key: format-version
+    Value: 3.3.9
+  - Key: start
+    Value: Start
+  - Key: YE
+    Value: green
+  - Key: START
+    Value: orange
+  - Key: END
+    Value: blue
+  - Key: TEST
+    Value: purple
+  - Key: '!TEST2'
+    Value: orange
+  - Key: '!character:Boss'
+    Value: red
+  - Key: "!character:Boss\xB4"
+    Value: green
+  - Key: '!character:string:Boss'
+    Value: red
+  - Key: '!character:Runt'
+    Value: red

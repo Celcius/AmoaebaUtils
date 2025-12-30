@@ -1,0 +1,18 @@
+{
+    "name": "DialogrBasicWindow",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2ab2da6e9126bd14a9572b94f8309324",
+        "GUID:ba345bee4f2ff284db13dbfe6fd8074e",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

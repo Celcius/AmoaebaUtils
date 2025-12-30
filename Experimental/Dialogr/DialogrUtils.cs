@@ -38,7 +38,7 @@ public static class DialogrUtils
             }
             else if(IsDataNode(nodeText))
             {
-                ParseData(nodeText, scene);
+                ParseNormalNode(nodeText, scene);
             }
             else if(nodeText.Length > 0)
             {
@@ -81,7 +81,7 @@ public static class DialogrUtils
         scene.SetTitle(TrimNodeFat(nodeText,TITLE_START, TITLE_END));
     }
 
-    public static void ParseData(string nodeText, DialogrScene scene)
+    public static void ParseNormalNode(string nodeText, DialogrScene scene)
     {
         const string DATA_START = "\n{\n";
         const string DATA_END = "\n}\n\n\n";
@@ -143,7 +143,7 @@ public static class DialogrUtils
         string tags = tagsPresent? 
         nodeText.Substring(titleEnd+TAG_START.Length, header.Length - (titleEnd + TAG_START.Length + TAG_END.Length))
             : "";
-        List<string> tagsList = new List<string>( tags.Split( new string[] { "," }, StringSplitOptions.None ) );
+        List<string> tagsList = new List<string>( tags.Split( new string[] { " " }, StringSplitOptions.None ) );
 
         // Extract Meta Actions
         const string META_ACTION_START = "!";
@@ -168,7 +168,7 @@ public static class DialogrUtils
         }
 
         // Extract Text and Options
-        List<SpeechOptions> options = new List<SpeechOptions>();
+        List<SpeechOption> options = new List<SpeechOption>();
         string text = "";
         string[] lines = messageText.Split( new string[] { "\n" }, StringSplitOptions.None);
         const string OPTION_START = "[[";
@@ -181,7 +181,7 @@ public static class DialogrUtils
                 // Option
                 string display = line.Substring(0, optionIndex);
                 string destination = line.Substring(optionIndex+OPTION_START.Length, line.Length - (optionIndex + OPTION_START.Length+OPTION_END.Length));
-                options.Add(new SpeechOptions(display, destination));
+                options.Add(new SpeechOption(display, destination));
             }
             else
             {
@@ -201,7 +201,7 @@ public static class DialogrUtils
         // Validate empty node
         int emptyOptions = 0;
         int nonEmptyOptions = 0;
-        foreach(SpeechOptions option in node.Options)
+        foreach(SpeechOption option in node.Options)
         {
             bool isEmpty = option.displayText == null || option.displayText.Length == 0;
             emptyOptions += isEmpty? 1 : 0;

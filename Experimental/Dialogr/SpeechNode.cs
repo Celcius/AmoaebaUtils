@@ -12,24 +12,24 @@ public class SpeechNode
 
     [SerializeField]
     private string _text;
-    public string Text {get;}
+    public string Text => _text;
 
     [SerializeField]
     private string[] _tags;
     public string[] Tags => _tags;
 
     [SerializeField]
-    private SpeechOptions[] _options;
-    public SpeechOptions[] Options => _options;
+    private SpeechOption[] _options;
+    public SpeechOption[] Options => _options;
     
     [SerializeField]
     private MetaAction[] _metaActions;
     public MetaAction[] MetaActions => _metaActions;
 
-    public SpeechNode(string Title, string Text, string[] Tags, SpeechOptions[] Options, MetaAction[] MetaActions)
+    public SpeechNode(string Title, string Text, string[] Tags, SpeechOption[] Options, MetaAction[] MetaActions)
     {
         this._title = Title;
-        this._text = Title;
+        this._text = Text;
         this._tags = Tags;
         this._options = Options;
         this._metaActions = MetaActions;
@@ -46,7 +46,7 @@ public class SpeechNode
         tagsStr += "]";
 
         string optionsStr = Options.Length > 0? "\nOptions:\n" : "";
-        foreach(SpeechOptions option in Options)
+        foreach(SpeechOption option in Options)
         {
             optionsStr += option.ToString() + "\n";
         }
@@ -56,14 +56,14 @@ public class SpeechNode
 }
 
 [Serializable]
-public struct SpeechOptions 
+public struct SpeechOption 
 {
     [SerializeField]
     public string displayText;
     [SerializeField]
     public string destinationNode;
 
-    public SpeechOptions( string display, string destination ) {
+    public SpeechOption( string display, string destination ) {
         displayText = display;
         destinationNode = destination;
     }
