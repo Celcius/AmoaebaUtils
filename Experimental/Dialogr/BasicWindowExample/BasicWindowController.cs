@@ -9,23 +9,23 @@ namespace Dialogr
 public class BasicWindowController : MonoBehaviour {
  
     [SerializeField] 
-    DialogrSceneScriptable StartFromScriptable;
+    protected DialogrSceneScriptable StartFromScriptable;
     
     [SerializeField]
-    CharacterNameScriptable DefaultNameScriptable;
+    protected CharacterNameScriptable DefaultNameScriptable;
 
-    DialogrScene CurScene;
-    SpeechNode CurNode;
-
-    [SerializeField]
-    private BasicWindow BasicWindow;
+    protected DialogrScene CurScene;
+    protected SpeechNode CurNode;
 
     [SerializeField]
-    StringEvent NextNodeEvent;
+    protected BasicWindow BasicWindow;
+
+    [SerializeField]
+    protected StringEvent NextNodeEvent;
  
     public delegate void NodeEnteredHandler( SpeechNode node );
 
-    private void Awake()
+    protected virtual void Awake()
     {
         NextNodeEvent.OnEvent += OnNextNode;
         if(StartFromScriptable != null)
@@ -35,19 +35,19 @@ public class BasicWindowController : MonoBehaviour {
         }
     }
 
-    public void ShowScene(DialogrScene scene, CharacterNameScriptable NamesScriptable = null)
+    public virtual  void ShowScene(DialogrScene scene, CharacterNameScriptable NamesScriptable = null)
     {
         this.CurScene = scene;
         BasicWindow.SetNamesScriptable(NamesScriptable == null? DefaultNameScriptable : NamesScriptable);
         InitializeDialogue();   
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
           NextNodeEvent.OnEvent -= OnNextNode;
     }
 
-    private void OnNextNode(string destination)
+     protected virtual void OnNextNode(string destination)
     {
         SpeechNode nextNode = CurScene.GetNode(destination);
         if(nextNode != null)
@@ -58,11 +58,11 @@ public class BasicWindowController : MonoBehaviour {
         }
     }
 
-    public SpeechNode GetCurrentNode() {
+    public virtual SpeechNode GetCurrentNode() {
         return CurNode;
     }
  
-    public void InitializeDialogue() 
+    public virtual void InitializeDialogue() 
     {
         CurNode = CurScene.GetStartNode();
         NextNodeEvent.Invoke(CurNode.Title);

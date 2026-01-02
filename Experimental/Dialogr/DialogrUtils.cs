@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Codice.Client.Common.TreeGrouper;
@@ -8,6 +9,24 @@ using UnityEditor.SearchService;
 
 namespace Dialogr
 {
+
+[Serializable]
+public struct TwineParseSettings
+{
+    public const string DEFAULT_META_START = "!";
+    public const string DEFAULT_META_DIVIDER = ":";
+    
+    [SerializeField]
+    public string MetaActionStart;
+    [SerializeField]
+    public string MetaActionDivider;
+
+    public TwineParseSettings(string metaActionStart, string metaActionDivider)
+    {
+        this.MetaActionStart = metaActionStart;
+        this.MetaActionDivider = metaActionDivider;
+    }
+}
 
 public static class DialogrUtils
 {
@@ -19,7 +38,7 @@ public static class DialogrUtils
     // Normal Format: "NodeTitle [Tags, comma, separated] \n Message Text with any number of paragraphs\n Option One Text[[Option One Destination]] \n Option Two Text [[Option Two]]"
     // No-Tag Format: "NodeTitle \n Message Text with any number of paragraphs\n Option One Text [[Option One Destination]] \n Option Two Text [[Option Two]]"
     // Null Option Format: "NodeTitle \n Message Text with any number of paragraphs \n [[Null Option]] 
-    public static void ParseTwineText(string twineText, DialogrScene scene)
+    public static void ParseTwineText(string twineText, DialogrScene scene, TwineParseSettings settings)
     {
         Assert.NotNull(scene, "Trying to setup invalid DialogrScene");
 
@@ -38,11 +57,11 @@ public static class DialogrUtils
             }
             else if(IsDataNode(nodeText))
             {
-                ParseNormalNode(nodeText, scene);
+                ParseMetaDataNode(nodeText, scene);
             }
             else if(nodeText.Length > 0)
             {
-                nodes.Add(ParseNode(nodeText, scene));
+                nodes.Add(ParseNode(nodeText, scene, settings));
             }
         }
         scene.SetNodes(nodes.ToArray());
@@ -81,7 +100,7 @@ public static class DialogrUtils
         scene.SetTitle(TrimNodeFat(nodeText,TITLE_START, TITLE_END));
     }
 
-    public static void ParseNormalNode(string nodeText, DialogrScene scene)
+    public static void ParseMetaDataNode(string nodeText, DialogrScene scene)
     {
         const string DATA_START = "\n{\n";
         const string DATA_END = "\n}\n\n\n";
@@ -89,6 +108,10 @@ public static class DialogrUtils
 
         // Need to remove zoom end which can be of variable size
         int zoomIndex = nodeText.IndexOf("\n  },\n  \"zoom\":");
+        if(zoomIndex < 0)
+        {
+            zoomIndex = nodeText.IndexOf(",\n  \"zoom\":"); // tagless scene
+        }
         nodeText = nodeText.Substring(0, zoomIndex);
         
         // need to add regular ending to use regex for last element
@@ -121,7 +144,7 @@ public static class DialogrUtils
         return nodeText.Substring(start, end-start);
     }
 
-    private static SpeechNode ParseNode(string nodeText, DialogrScene scene)
+    private static SpeechNode ParseNode(string nodeText, DialogrScene scene, TwineParseSettings settings)
     {
         const string DIVIDER = " \n";
         int dividerStart = nodeText.IndexOf(DIVIDER);
@@ -133,6 +156,7 @@ public static class DialogrUtils
         bool tagsPresent = nodeText.IndexOf(TAG_START) > 0;
 
         // Extract Title
+
         int titleStart = 0;
         int titleEnd = tagsPresent
             ? nodeText.IndexOf(TAG_START)
@@ -140,24 +164,24 @@ public static class DialogrUtils
         string title = nodeText.Substring(titleStart, titleEnd - titleStart).Trim();
 
         // Extract Tags
+
         string tags = tagsPresent? 
         nodeText.Substring(titleEnd+TAG_START.Length, header.Length - (titleEnd + TAG_START.Length + TAG_END.Length))
             : "";
         List<string> tagsList = new List<string>( tags.Split( new string[] { " " }, StringSplitOptions.None ) );
 
         // Extract Meta Actions
-        const string META_ACTION_START = "!";
-        const string META_ACTION_DIVIDER = ":";
+  
         List<MetaAction> metaActionsList = new List<MetaAction>();
         HashSet<string> metaActionsValidation = new HashSet<string>();
         for(int i = tagsList.Count-1; i >= 0; i--)
         {
             string tag = tagsList[i];
-            if(tag.StartsWith(META_ACTION_START))
+            if(tag.StartsWith(settings.MetaActionStart))
             {
-                tag = tag.Substring(META_ACTION_START.Length, tag.Length-META_ACTION_START.Length);
+                tag = tag.Substring(settings.MetaActionStart.Length, tag.Length-settings.MetaActionStart.Length);
                 tagsList.RemoveAt(i);
-                List<string> actionElements = new List<string>(tag.Split(new string[] { META_ACTION_DIVIDER }, StringSplitOptions.None));
+                List<string> actionElements = new List<string>(tag.Split(new string[] { settings.MetaActionDivider }, StringSplitOptions.None));
                 Assert.True(actionElements.Count > 1, "Invalid amount of actionElements in node " + title);
                 
                 string key = actionElements[0];
@@ -168,6 +192,7 @@ public static class DialogrUtils
         }
 
         // Extract Text and Options
+
         List<SpeechOption> options = new List<SpeechOption>();
         string text = "";
         string[] lines = messageText.Split( new string[] { "\n" }, StringSplitOptions.None);
@@ -175,18 +200,20 @@ public static class DialogrUtils
         const string OPTION_END = "]]";
         foreach(string line in lines)
         {
-            int optionIndex = line.IndexOf(OPTION_START);
-            if(line.IndexOf(OPTION_START) > 0)
+            string trimmed = line.Trim(); // Need to trim to avoid problems with transitions
+            int optionIndex = trimmed.IndexOf(OPTION_START);
+            if(optionIndex >= 0)
             {
                 // Option
-                string display = line.Substring(0, optionIndex);
-                string destination = line.Substring(optionIndex+OPTION_START.Length, line.Length - (optionIndex + OPTION_START.Length+OPTION_END.Length));
+                
+                string display = optionIndex == 0? "" : trimmed.Substring(0, optionIndex);
+                string destination = trimmed.Substring(optionIndex+OPTION_START.Length, trimmed.Length - (optionIndex + OPTION_START.Length+OPTION_END.Length));
                 options.Add(new SpeechOption(display, destination));
             }
             else
             {
                 // Text
-                text += line + "\n";
+                text += trimmed + "\n";
             }
         }
         text = text.Trim();

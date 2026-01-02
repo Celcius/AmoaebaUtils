@@ -6,31 +6,47 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.AI;
 using NUnit.Framework;
+using System.Collections;
 
 public class BasicWindow : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI Nameplate;
+    protected TextMeshProUGUI Nameplate;
 
     [SerializeField]
-    private TextMeshProUGUI DialogLabel;
+    protected TextMeshProUGUI DialogLabel;
 
     [SerializeField]
-    private BasicWindowOption OptionsPrefab;
+    protected BasicWindowOption OptionsPrefab;
 
     [SerializeField]
-    private Transform OptionsHolder;
+    protected Transform OptionsHolder;
 
-    private List<BasicWindowOption> PooledOptions = new List<BasicWindowOption>();
+    [SerializeField]
+    protected BasicWindowOption NextDialogOption;
 
-    private bool IsOpen = false;
+    [SerializeField]
+    protected Vector2 ShakeOffset;
 
-    private const string CHARACTER_TAG = "character";
-    private const string SHAKE_TEXT = "shakeText";
+    [SerializeField]
+    protected Vector2 MaxShakeOffset;
+    [SerializeField]
+    protected Vector2 ShakeDelay;
 
-    private CharacterNameScriptable NamesInterpreter;
+    protected List<BasicWindowOption> PooledOptions = new List<BasicWindowOption>();
 
-    public void ShowNode(SpeechNode node)
+    protected bool IsOpen = false;
+
+    protected const string CHARACTER_TAG = "character";
+    protected const string SHAKE_TAG = "shake";
+
+    protected CharacterNameScriptable NamesInterpreter;
+
+    protected IEnumerator ShakeRoutine = null;
+    protected Vector3 OriginalDialogLabelPosition;
+    protected Bounds MaxShakeBounds;
+
+    public virtual void ShowNode(SpeechNode node)
     {
         if(!IsOpen)
         {
@@ -41,26 +57,32 @@ public class BasicWindow : MonoBehaviour
         DisplayNode(node);
     }
 
-    void Awake()
+    protected virtual void Awake()
     {
+        OriginalDialogLabelPosition = DialogLabel.transform.position;
+        MaxShakeBounds = new Bounds(OriginalDialogLabelPosition, MaxShakeOffset);
+        
         gameObject.SetActive(false);
         IsOpen = false;
     }
 
-    public void SetNamesScriptable(CharacterNameScriptable scriptable)
+    public virtual void SetNamesScriptable(CharacterNameScriptable scriptable)
     {
         this.NamesInterpreter = scriptable;
     }
 
-    private void DisplayNode(SpeechNode node)
+    protected virtual void DisplayNode(SpeechNode node)
     {
-        ParseMetaActions(node.MetaActions);
+        ResetDialog();
+        StopActions();
+        ParseMetaActions(node);
         DialogLabel.text = node.Text;
         CreateButtons(node.Options);
     }
 
-    private void ParseMetaActions(MetaAction[] metas)
+    protected virtual void ParseMetaActions(SpeechNode node)
     {
+        MetaAction[] metas = node.MetaActions;
         Nameplate.text ="ERROR: Forgot to set character for this node";
         foreach(MetaAction meta in  metas)
         {
@@ -69,20 +91,43 @@ public class BasicWindow : MonoBehaviour
                 Assert.True(meta.Values.Length ==1, "Incorrect Name format for name");
                 Nameplate.text = NamesInterpreter.GetLabel(meta.Values[0]);
             }
+            else if(meta.Action.CompareTo(SHAKE_TAG) == 0)
+            {
+                Assert.True(meta.Values.Length == 2, "Incorrect Name format for shake, expected intensity [0-1] and duration [-1,+]");
+                try
+                {
+                    float intensity = float.Parse(meta.Values[0]);
+                    float duration = float.Parse(meta.Values[1]);
+                    ShakeRoutine = ShakeEvent(intensity, duration);
+                    StartCoroutine(ShakeRoutine);    
+                } 
+                catch (Exception e)
+                {
+                    Debug.LogError("Unable to parse Shake values for " + node.Title);
+                }
+
+            }
         }
     }
 
-    private void CreateButton(bool startEnabled = true)
+    protected virtual void CreateButton(bool startEnabled = true)
     {
         BasicWindowOption newOption = Instantiate(OptionsPrefab, OptionsHolder);
         PooledOptions.Add(newOption);
         newOption.gameObject.SetActive(startEnabled);
     }
 
-    private void CreateButtons(SpeechOption[] options)
+    protected virtual void CreateButtons(SpeechOption[] options)
     {
         DisableButtons();
 
+        if(options.Length == 1 && string.IsNullOrEmpty(options[0].displayText))
+        {
+            NextDialogOption.ShowButton(options[0]);
+            return;
+        }
+
+        // For multiple options
         for(int i = 0; i < options.Length; i++)
         {
             if(i>= PooledOptions.Count)
@@ -93,11 +138,45 @@ public class BasicWindow : MonoBehaviour
         } 
     }
 
-    private void DisableButtons()
+    protected virtual void DisableButtons()
     {
+        NextDialogOption.HideButton();
         for(int i = 0; i < PooledOptions.Count; i++)
         {
             PooledOptions[i].HideButton();
+        }
+    }
+
+    protected virtual IEnumerator ShakeEvent(float intensity, float duration)
+    {
+        float elapsed = 0;
+        while(elapsed < duration || duration < 0)
+        {
+            intensity = Mathf.Clamp01(intensity);
+            Vector2 offset = new Vector2(UnityEngine.Random.Range(-1.0f,1.0f), UnityEngine.Random.Range(-1.0f,1.0f)) * intensity;
+            offset.Scale(ShakeOffset);
+            Vector3 finalPos = DialogLabel.transform.position + (Vector3)offset;
+            finalPos.x = Mathf.Clamp(finalPos.x, MaxShakeBounds.min.x, MaxShakeBounds.max.x);
+            finalPos.y = Mathf.Clamp(finalPos.y, MaxShakeBounds.min.y, MaxShakeBounds.max.y);
+            
+            DialogLabel.transform.position = finalPos;
+            float waitSecs = Mathf.Lerp(ShakeDelay.x, ShakeDelay.y, intensity);
+            yield return new WaitForSeconds(waitSecs);
+            elapsed += waitSecs;
+        }
+        ResetDialog();
+    }
+
+    protected virtual void ResetDialog()
+    {
+        DialogLabel.transform.position = OriginalDialogLabelPosition;
+    }
+
+    protected virtual void StopActions()
+    {
+        if(ShakeRoutine != null)
+        {
+            StopCoroutine(ShakeRoutine);
         }
     }
 }

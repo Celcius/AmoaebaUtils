@@ -36,6 +36,13 @@ public class DialogrSceneScriptable : ScriptableObject, DialogrScene
 
     [SerializeField]
     protected DataEntriesStruct[] DataEntries;
+
+    
+    [SerializeField, HideInInspector]
+    protected UnityEngine.Object LoadedTwineAsset;
+
+    [SerializeField, HideInInspector]
+    protected TwineParseSettings LoadedSettings;
     
     private Dictionary<string, SpeechNode> SpeechNodesDict;
     private Dictionary<string,string> DataEntriesDict;
@@ -71,13 +78,19 @@ public class DialogrSceneScriptable : ScriptableObject, DialogrScene
         DataEntriesDict?.Clear();       
     }
 
+    public void ReloadTweeAsset()
+    {
+        InitializeAsset(LoadedTwineAsset, LoadedSettings);   
+    }
 
-    public void InitializeAsset(UnityEngine.Object twineText) 
+    public void InitializeAsset(UnityEngine.Object twineText, TwineParseSettings settings) 
     {
         if (twineText is TextAsset textAsset)
         {
             Assert.True(textAsset != null, "Text Asset is null - " + twineText.name);
-            DialogrUtils.ParseTwineText( textAsset.text, this);
+            DialogrUtils.ParseTwineText( textAsset.text, this, settings);
+            LoadedTwineAsset = twineText;
+            LoadedSettings = settings;
         }
     }
     

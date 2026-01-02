@@ -7,15 +7,15 @@ using AmoaebaUtils;
 public class BasicWindowOption : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI TextLabel;
+    protected TextMeshProUGUI TextLabel;
 
     [SerializeField]
-    private Button Button;
+    protected Button Button;
 
     [SerializeField]
-    private StringEvent NextNodeEvent;
+    protected StringEvent NextNodeEvent;
 
-    private SpeechOption Option;
+    protected SpeechOption Option;
 
     public void Awake()
     {
@@ -33,14 +33,21 @@ public class BasicWindowOption : MonoBehaviour
     public void ShowButton(SpeechOption option)
     {
         ClearButton();
-        TextLabel.text = option.displayText;
+        
+        if(TextLabel != null)
+        {
+            TextLabel.text = option.displayText;    
+        }
         Option = option;
         gameObject.SetActive(true);
     }
 
     public void ClearButton()
     {
-        TextLabel.text = "";
+        if(TextLabel != null)
+        {
+            TextLabel.text = "";    
+        }
     }
 
     public void HideButton()

@@ -14,9 +14,9 @@ public class DialogrSceneObject : DialogrScene
     protected Dictionary<string,string> DataEntries;
     protected string StartNode;
 
-    public DialogrSceneObject(TextAsset twineText) 
+    public DialogrSceneObject(TextAsset twineText, TwineParseSettings settings) 
     {
-        DialogrUtils.ParseTwineText( twineText.text, this);
+        DialogrUtils.ParseTwineText( twineText.text, this, settings);
     }
     
     public void SetTitle(string title)

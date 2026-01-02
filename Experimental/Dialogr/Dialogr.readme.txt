@@ -1,17 +1,54 @@
+
 Dialogr is a Twine integration for unity
 
 This system was started by taking strong inspiration on
 https://www.youtube.com/watch?v=cmafUgj1cu8
 
-It uses the Entweedle format which has an MIT License
-Developed by by Michael McCollum https://x.com/gnustoboz
-Format in:
-https://maximumverbosity.net/twine/Entweedle/format.js
-Also backed up to EntweedleFormatBackup.js
+1. Write your file using Twine
+2. Save your .Twee file as .txt
+3. Right-Click on the project and select Create > Dialogr > Load Twine to Dialogr Scene Scriptable
+4. Select your .Twee file in the Wizard
+4.1 You can set your own settings for importing here
+4. Select the folder to export to
 
+Additionally you can quickly reload your .twee file by right-clicking one or more Scene Scriptables
+and selecting "Reload Dialogr .Twee Assets". 
+> Note that this only works if the twee file is still the same.
 
-Save your .Twee file as .txt
+--------
+
+Some Nomenclature:
+* Speech Scene
+A scene is the entirety of a .twee file and all of its Speech Nodes
+
+A scene must have a start node.
+
+* Speech Nodes
+A Conversation Node in Twine.
+It is understood as having:
+Options to transition to other Speech Nodes.
+Tags which can be used to mark up the conversation
+MetaActions which are Tags that can have values.
+
+* Option
+These are jumps between Speech Nodes
 
 Options are exported as [[ and ]], so normal text cannot have these special characters
-Only a single empty Option is allowed as it means its a transition.
+
+Our Basic Window Example uses empty single Options as an automatic transition between 
+Speech Nodes without creating buttons
+
+* Tags
+These are Twine-based markups
+MetaActions are extracted from Tags but are considered separately
+
+* Meta Actions 
+These are special tags that can have values to instruct the game of how to present the text
+
+By default these come in the format !Key:Value1:Value2:...
+It can have as many values as needed but it needs at least one.
+
+An example is !character:Boss, where it indicates a character of value Boss is communicating.
+
+Ultimately Dialogr does not enforce what MetaActions do, and its up to each project to define and interpret them.
 

@@ -17,25 +17,41 @@ Prototype
     "!character:Boss": "red",
     "!character:Boss´": "green",
     "!character:string:Boss": "red",
-    "!character:Runt": "red"
+    "!character:Runt": "red",
+    "!shake:1:-1": "green",
+    "!shake:1:5": "yellow"
   },
   "zoom": 1
 }
 
 
-:: Acceptance [END !character:Runt] {"position":"600,300","size":"100,100"}
-Aww that's nice you have a good day
+:: Acceptance [!character:Runt] {"position":"75,400","size":"100,100"}
+Aww, that's really nice you have a good day!
 Restart [[Start]]
 
 
-:: Rejection [END !character:Runt] {"position":"600,50","size":"100,100"}
-How is that possible!?? 
-Those poor penguins
-Restart [[Start]]
-
-
-:: Start [START TEST !character:Boss] {"position":"350,100","size":"100,100"}
-Hows the weather over there
+:: Q [!character:Boss] {"position":"275,300","size":"100,100"}
+Hows the weather over there?
 Too Cold for Penguins[[Rejection]]
 Warm and fuzzy[[Acceptance]]
+
+
+
+:: Rejection [!character:Runt !shake:1:-1] {"position":"475,400","size":"100,100"}
+How is that possible!?? 
+Those poor penguins...
+Restart [[Start]]
+
+
+:: Runt1 [!character:Runt] {"position":"275,175","size":"100,100"}
+We have something to ask you...
+[[Q]] 
+
+
+:: Start [!character:Boss] {"position":"275,0","size":"100,100"}
+Hey....
+[[Runt1]]
+
+
+:: Untitled Passage {"position":"750,250","size":"100,100"}
 

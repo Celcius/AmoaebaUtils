@@ -15,9 +15,8 @@ MonoBehaviour:
   DialogTitle: Prototype
   NodesArray:
   - _title: Acceptance
-    _text: Aww that's nice you have a good day
-    _tags:
-    - END
+    _text: Aww, that's really nice you have a good day!
+    _tags: []
     _options:
     - displayText: 'Restart '
       destinationNode: Start
@@ -25,22 +24,9 @@ MonoBehaviour:
     - Action: character
       Values:
       - Runt
-  - _title: Rejection
-    _text: "How is that possible!?? \nThose poor penguins"
-    _tags:
-    - END
-    _options:
-    - displayText: 'Restart '
-      destinationNode: Start
-    _metaActions:
-    - Action: character
-      Values:
-      - Runt
-  - _title: Start
-    _text: Hows the weather over there
-    _tags:
-    - START
-    - TEST
+  - _title: Q
+    _text: Hows the weather over there?
+    _tags: []
     _options:
     - displayText: Too Cold for Penguins
       destinationNode: Rejection
@@ -50,6 +36,48 @@ MonoBehaviour:
     - Action: character
       Values:
       - Boss
+  - _title: Rejection
+    _text: 'How is that possible!??
+
+      Those poor penguins...'
+    _tags: []
+    _options:
+    - displayText: 'Restart '
+      destinationNode: Start
+    _metaActions:
+    - Action: shake
+      Values:
+      - 1
+      - -1
+    - Action: character
+      Values:
+      - Runt
+  - _title: Runt1
+    _text: We have something to ask you...
+    _tags: []
+    _options:
+    - displayText: 
+      destinationNode: Q
+    _metaActions:
+    - Action: character
+      Values:
+      - Runt
+  - _title: Start
+    _text: Hey....
+    _tags: []
+    _options:
+    - displayText: 
+      destinationNode: Runt1
+    _metaActions:
+    - Action: character
+      Values:
+      - Boss
+  - _title: Untitled Passage
+    _text: 
+    _tags:
+    - 
+    _options: []
+    _metaActions: []
   StartNode: Start
   DataEntries:
   - Key: ifid
@@ -78,3 +106,9 @@ MonoBehaviour:
     Value: red
   - Key: '!character:Runt'
     Value: red
+  - Key: '!shake:1:-1'
+    Value: green
+  LoadedTwineAsset: {fileID: 2811297602134710623, guid: eb12d236021f0d346af8177959402203, type: 3}
+  LoadedSettings:
+    MetaActionStart: '!'
+    MetaActionDivider: ':'

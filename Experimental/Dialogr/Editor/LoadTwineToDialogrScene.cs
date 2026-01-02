@@ -11,11 +11,15 @@ public class LoadTwineToDialogrScene : ScriptableWizard
     [SerializeField]
     private Object[] tweeAssets;
 
-    [MenuItem("Assets/Create/Dialogr/Load Twine to Dialogr Scene",false,(int)'a')]
+    [SerializeField]
+    private TwineParseSettings settings = new TwineParseSettings(TwineParseSettings.DEFAULT_META_START, 
+                                                                 TwineParseSettings.DEFAULT_META_DIVIDER);
+
+    [MenuItem("Assets/Create/Dialogr/Load Twine to Dialogr Scene Scriptable",false,(int)'a')]
     public static void ShowWizard()
     {
         
-        ScriptableWizard.DisplayWizard<LoadTwineToDialogrScene>("Load Twine TxT Files", "Load");
+        ScriptableWizard.DisplayWizard<LoadTwineToDialogrScene>("Load Twine Twee Files", "Load");
     }
 
     private void OnValidate()
@@ -54,7 +58,7 @@ public class LoadTwineToDialogrScene : ScriptableWizard
         {
             return;
         }
-
+        
         string directory = EditorUtility.OpenFolderPanel("Select Directory under Assets folder", Application.dataPath, "");
         if(string.IsNullOrEmpty(directory))
         {
@@ -70,9 +74,22 @@ public class LoadTwineToDialogrScene : ScriptableWizard
             {
                 continue;
             }
-            DialogrSceneScriptable scriptable = ScriptableObject.CreateInstance<DialogrSceneScriptable>();
-            scriptable.InitializeAsset(asset);
-            ScriptableObjectUtility.CreateAssetAtPath(scriptable, directory+"/"+asset.name+ ".asset");    
+            string pathName = directory+"/"+asset.name+ ".asset";
+            DialogrSceneScriptable scriptable = (DialogrSceneScriptable)AssetDatabase.LoadAssetAtPath(pathName, typeof(DialogrSceneScriptable));
+            if(scriptable == null)
+            {
+                scriptable = ScriptableObject.CreateInstance<DialogrSceneScriptable>();
+                scriptable.InitializeAsset(asset, settings);
+                ScriptableObjectUtility.CreateAssetAtPath(scriptable, pathName);    
+            }
+            else
+            {
+                scriptable.InitializeAsset(asset, settings);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                Selection.activeObject = asset;
+                EditorUtility.FocusProjectWindow();
+            }
         }
     }
 }
