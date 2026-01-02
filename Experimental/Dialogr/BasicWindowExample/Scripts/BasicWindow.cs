@@ -20,10 +20,16 @@ public class BasicWindow : MonoBehaviour
     protected BasicWindowOption OptionsPrefab;
 
     [SerializeField]
+    protected SlowTyper SlowTyper;
+
+    [SerializeField]
     protected Transform OptionsHolder;
 
     [SerializeField]
     protected BasicWindowOption NextDialogOption;
+    
+    [SerializeField]
+    private Transform SkipTypingButton;
 
     [SerializeField]
     protected Vector2 ShakeOffset;
@@ -76,8 +82,12 @@ public class BasicWindow : MonoBehaviour
         ResetDialog();
         StopActions();
         ParseMetaActions(node);
-        DialogLabel.text = node.Text;
-        CreateButtons(node.Options);
+        DisableButtons();
+
+        SkipTypingButton.gameObject.SetActive(true);
+
+        Action finishTypingAction = () => { CreateButtons(node.Options);};
+        SlowTyper.Begin(true, node.Text, finishTypingAction);
     }
 
     protected virtual void ParseMetaActions(SpeechNode node)
@@ -119,8 +129,7 @@ public class BasicWindow : MonoBehaviour
 
     protected virtual void CreateButtons(SpeechOption[] options)
     {
-        DisableButtons();
-
+        SkipTypingButton.gameObject.SetActive(false);
         if(options.Length == 1 && string.IsNullOrEmpty(options[0].displayText))
         {
             NextDialogOption.ShowButton(options[0]);
@@ -165,6 +174,7 @@ public class BasicWindow : MonoBehaviour
             elapsed += waitSecs;
         }
         ResetDialog();
+        ShakeRoutine = null;
     }
 
     protected virtual void ResetDialog()
@@ -177,6 +187,7 @@ public class BasicWindow : MonoBehaviour
         if(ShakeRoutine != null)
         {
             StopCoroutine(ShakeRoutine);
+            ShakeRoutine = null;
         }
     }
 }

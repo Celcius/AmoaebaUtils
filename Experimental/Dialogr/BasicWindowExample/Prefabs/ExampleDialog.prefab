@@ -247,6 +247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cdcaf3222bb7a47b851a2eef0a43c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlowTyper
+  delay: 0.018
+  PunctuationDelay: 0.3
+  SoundDelay: 0.1
 --- !u!1 &5494145275722474404
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +492,138 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &6472622307429403222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9202333022577065958}
+  - component: {fileID: 63225155879878465}
+  - component: {fileID: 4915253307470131111}
+  - component: {fileID: 6814985249835213385}
+  - component: {fileID: 8625206341836053671}
+  m_Layer: 5
+  m_Name: SkipTypeButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &9202333022577065958
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472622307429403222}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4218303175379593162}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &63225155879878465
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472622307429403222}
+  m_CullTransparentMesh: 1
+--- !u!114 &4915253307470131111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472622307429403222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 6814985249835213385}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8625206341836053671}
+        m_TargetAssemblyTypeName: SkipTypeButton, DialogrBasicWindow
+        m_MethodName: OnSkipPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6814985249835213385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472622307429403222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55837412dca84d428b7db0d94116d66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AmoaebaUtils::AmoaebaUtils.UndrawableGraphic
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8625206341836053671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6472622307429403222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50382a0ab7172a45b6fcd355ee63fdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DialogrBasicWindow::SkipTypeButton
+  SlowTyper: {fileID: 677251799437073262}
 --- !u!1 &6874782139346252288
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,6 +722,7 @@ RectTransform:
   - {fileID: 7188021867082309927}
   - {fileID: 7678431027758094184}
   - {fileID: 6159257780434680303}
+  - {fileID: 9202333022577065958}
   m_Father: {fileID: 3613226049687218754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -609,8 +745,10 @@ MonoBehaviour:
   Nameplate: {fileID: 5801800556481171926}
   DialogLabel: {fileID: 1407602370945589993}
   OptionsPrefab: {fileID: 7111338313087588281}
+  SlowTyper: {fileID: 677251799437073262}
   OptionsHolder: {fileID: 7678431027758094184}
   NextDialogOption: {fileID: 2504168991018633677}
+  SkipTypingButton: {fileID: 9202333022577065958}
   ShakeOffset: {x: 10, y: 3}
   MaxShakeOffset: {x: 2.5, y: 4}
   ShakeDelay: {x: 0.4, y: 0.1}
@@ -662,6 +800,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7188021867082309927}
   - component: {fileID: 584850281430404438}
+  - component: {fileID: 677251799437073262}
   - component: {fileID: 1407602370945589993}
   - component: {fileID: 8052394223619678654}
   m_Layer: 5
@@ -698,6 +837,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7246476901794411260}
   m_CullTransparentMesh: 1
+--- !u!114 &677251799437073262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7246476901794411260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cdcaf3222bb7a47b851a2eef0a43c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlowTyper
+  delay: 0.018
+  PunctuationDelay: 0.3
+  SoundDelay: 0.1
 --- !u!114 &1407602370945589993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -801,6 +955,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cdcaf3222bb7a47b851a2eef0a43c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlowTyper
+  delay: 0.018
+  PunctuationDelay: 0.3
+  SoundDelay: 0.1
 --- !u!1001 &6602782551990644968
 PrefabInstance:
   m_ObjectHideFlags: 0
