@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AmoaebaUtils
 {
+[ExecuteInEditMode]
 public class BillboardPlane : MonoBehaviour
 {
     [SerializeField]
