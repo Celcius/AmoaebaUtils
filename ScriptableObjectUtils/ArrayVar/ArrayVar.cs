@@ -9,6 +9,9 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
 {
     public const int INVALID_INDEX = -1;
 
+    public delegate void OnUnitValueChange(T Value, bool isAdd); // either Add or Remove
+    public event OnUnitValueChange OnSingleValueChange;
+
     public virtual void Add(T component)
     {
         T[] oldValue = value;
@@ -25,6 +28,11 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
         }
 
         InvokeChangeEvent(oldValue, value);
+
+        if(OnSingleValueChange != null) 
+        { 
+            OnSingleValueChange(component, true); 
+        }
     }
 
     public virtual bool Remove(T component)
@@ -51,6 +59,12 @@ public class ArrayVar<T> : ScriptVar<T[]>, ICollectionVar<T>
         value = dest;
 
         InvokeChangeEvent(oldValue, value);
+
+        if(OnSingleValueChange != null) 
+        { 
+            OnSingleValueChange(component, false); 
+        }
+
         return true;
     }
 
