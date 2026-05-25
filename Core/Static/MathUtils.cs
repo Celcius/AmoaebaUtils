@@ -26,6 +26,7 @@ public static class MathUtils
         return res;
     }
 
+    /* ensures the Mod never goes to a negative number*/
     public static int NegMod(int x, int m) 
     {
         int r = x%m;
