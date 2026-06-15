@@ -11,7 +11,15 @@ public class DestroyAfter : MonoBehaviour
 
     private float elapsed = 0;
 
-    void Update()
+    void Awake()
+    {
+        if(timeToDestroy == 0)
+        {
+            DestroySelf();
+        }
+    }
+
+        void Update()
     {
         elapsed += GetDeltaTime();
         if(timeToDestroy <= elapsed)
@@ -23,7 +31,7 @@ public class DestroyAfter : MonoBehaviour
 
     protected virtual void DestroySelf()
     {
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     protected virtual float GetDeltaTime()
