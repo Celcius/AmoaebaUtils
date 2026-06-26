@@ -50,5 +50,15 @@ public static class MathUtils
         }
         return sign * modulatedIndex;
     }
+
+    public static float RandomFromVec(Vector2 vector)
+    {
+        return Random.Range(vector.x, vector.y);
+    }
+
+     public static int RandomFromVec(Vector2Int vector)
+    {
+        return Random.Range(vector.x, vector.y);
+    }
 }
 }
