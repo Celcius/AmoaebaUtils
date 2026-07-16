@@ -8,16 +8,16 @@ namespace AmoaebaUtils
 public class BillboardPlane : MonoBehaviour
 {
     [SerializeField]
-    private Transform cameraTransform;
+    protected Transform _cameraTransform;
 
     void Update()
     {
-        if(cameraTransform == null)
+        if(_cameraTransform == null)
         {
             return;
         }
 
-        transform.forward = transform.position - cameraTransform.position;
+        transform.forward = transform.position - _cameraTransform.position;
     }
 }
 }
