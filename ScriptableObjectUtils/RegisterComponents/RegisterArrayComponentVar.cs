@@ -12,9 +12,12 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
     public enum RegisterType
     {
         AwakeOnly,
+        StartOnly,
         AwakeDestroy,
+        StartDestroy,
         EnableDisable,
-        AwakeEnableDisable
+        AwakeEnableDisable,
+        StartEnableDisable,
     }
     
     [SerializeField]
@@ -38,9 +41,21 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if(registerType == RegisterType.StartOnly 
+           || registerType == RegisterType.StartDestroy
+           || registerType == RegisterType.StartEnableDisable)
+        {
+            Register(registerType == RegisterType.AwakeOnly);
+        }
+    }
+
     private void OnEnable() 
     {
-        if(registerType == RegisterType.AwakeEnableDisable || registerType == RegisterType.EnableDisable)
+        if(registerType == RegisterType.AwakeEnableDisable 
+            || registerType == RegisterType.StartEnableDisable
+            || registerType == RegisterType.EnableDisable)
         {
             Register(false);
         }
@@ -48,7 +63,9 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
 
     private void OnDisable()
     {
-        if(registerType == RegisterType.AwakeEnableDisable || registerType == RegisterType.EnableDisable)
+        if(registerType == RegisterType.AwakeEnableDisable 
+           || registerType == RegisterType.StartEnableDisable
+           || registerType == RegisterType.EnableDisable)
         {
             Unregister();
         }
@@ -56,7 +73,8 @@ public class RegisterArrayComponentVar<T,V> : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(registerType == RegisterType.AwakeDestroy)
+        if(registerType == RegisterType.AwakeDestroy
+           || registerType == RegisterType.StartDestroy)
         {
             Unregister();
         }
