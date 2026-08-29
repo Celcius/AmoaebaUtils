@@ -211,5 +211,28 @@ namespace AmoaebaUtils
             }
             return false;
         }
-    }
+
+        // alpha assumes 0-1 range, 0 is points[0] and 1 is points[Len-1]
+        // returns interpolated value for alpha value
+        public static Vector3 EvaluatePointList(Vector3[] points, float alpha)
+        {
+            if(points == null || points.Length == 0)
+            {
+                return Vector3.zero;
+            }
+
+            if(points.Length == 1)
+            {
+                return points[0];
+            }
+
+            alpha = Mathf.Clamp01(alpha);
+            float interpVal = (points.Length-1) * alpha;
+            int floor = Mathf.FloorToInt(interpVal);
+            int ceil = Mathf.CeilToInt(interpVal);
+            float remainder = interpVal - floor;
+            
+            return points[floor] + (points[ceil]-points[floor])*remainder;
+        }
+    }   
 }
