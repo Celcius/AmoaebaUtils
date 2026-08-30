@@ -234,5 +234,23 @@ namespace AmoaebaUtils
             
             return points[floor] + (points[ceil]-points[floor])*remainder;
         }
+
+        public static void DrawPointSegments(Vector3[] points)
+        {
+            DrawPointSegments(points, Color.green);
+        }
+
+        public static void DrawPointSegments(Vector3[] points, Color color, float duration = 1.0f, bool depthTest = true)
+        {
+            if(points == null || points.Length <= 1)
+            {
+                return;   
+            }
+
+            for(int i = 0; i < points.Length-2;i++)
+            {
+                Debug.DrawLine(points[i],points[i+1],color, duration, depthTest);
+            }       
+        }
     }   
 }
