@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 namespace AmoaebaUtils
 {
 public class RotateAnim : CurveAnim
@@ -29,21 +31,22 @@ public class RotateAnim : CurveAnim
     [SerializeField]
     private Vector2 _randomRangeZ;
 
-    private Vector3 _randomizedVector;
+    [SerializeField]
+    private BoolVector3 _randomDir;
+    
 
     protected override void Start()
     {
         base.Start();
 
-        _randomizedVector = Vector3.zero;
-        _randomizedVector.x = _randomX? MathUtils.RandomFromVec(_randomRangeX) : 0;
-        _randomizedVector.y = _randomX? MathUtils.RandomFromVec(_randomRangeY) : 0;
-        _randomizedVector.z = _randomX? MathUtils.RandomFromVec(_randomRangeZ) : 0;
+        speedVec.x = (_randomDir.x? Mathf.Sign(Random.Range(-10,10)) : 1.0f) * (_randomX? MathUtils.RandomFromVec(_randomRangeX) : speedVec.x);
+        speedVec.y = (_randomDir.y? Mathf.Sign(Random.Range(-10,10)) : 1.0f) * (_randomY? MathUtils.RandomFromVec(_randomRangeY) : speedVec.y);
+        speedVec.z = (_randomDir.z? Mathf.Sign(Random.Range(-10,10)) : 1.0f) * (_randomZ? MathUtils.RandomFromVec(_randomRangeZ) : speedVec.z);
     }
 
     protected override void OnChange(float evaluatedVal)
     {
-        transform.Rotate(evaluatedVal * (speedVec + _randomizedVector), Space.Self);
+        transform.Rotate(evaluatedVal * speedVec, Space.Self);
     }
 }
 }

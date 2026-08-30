@@ -20,7 +20,7 @@ public class BillboardPlaneFromVar : BillboardPlane
         _mainCamera.OnChange -= OnCameraChanged;
     }
 
-        private void OnCameraChanged(Transform oldValue, Transform newValue)
+    private void OnCameraChanged(Transform oldValue, Transform newValue)
     {
         _cameraTransform = newValue.transform;    
     }
