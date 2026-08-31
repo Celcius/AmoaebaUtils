@@ -56,7 +56,7 @@ public static class MathUtils
         return Random.Range(vector.x, vector.y);
     }
 
-     public static int RandomFromVec(Vector2Int vector)
+    public static int RandomFromVec(Vector2Int vector)
     {
         return Random.Range(vector.x, vector.y);
     }

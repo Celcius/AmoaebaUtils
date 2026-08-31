@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+using Random = UnityEngine.Random;
 
 namespace AmoaebaUtils
 {
@@ -23,11 +26,20 @@ namespace AmoaebaUtils
                                Random.Range(-range.y,range.y));
         }
         
-        public static Vector2 RandomPointInBounds(Bounds bounds)
+        public static Vector2 RandomPoint2DInBounds(Bounds bounds)
         {
-            return (Vector2)bounds.center + 
-                        RandomPointInRectangle((Vector2)bounds.extents);
+            return new Vector2(Random.Range(bounds.min.x, bounds.max.x),
+                               Random.Range(bounds.min.y, bounds.max.y));
         }
+
+        public static Vector3 RandomPointInBounds(Bounds bounds)
+        {
+            return new Vector3(Random.Range(bounds.min.x, bounds.max.x),
+                               Random.Range(bounds.min.y, bounds.max.y),
+                               Random.Range(bounds.min.z, bounds.max.z));
+        }
+        
+
         public static Vector2 RandomPointInOval(float x, float y)
         {
             return RandomPointInOval(new Vector2(x,y));
@@ -90,7 +102,7 @@ namespace AmoaebaUtils
             if(!validRange.Intersects(invalidRange))
             {
                 found = true;
-                return RandomPointInBounds(validRange);
+                return RandomPoint2DInBounds(validRange);
             }
             float[] boundsX = {Mathf.Min(validRange.min.x, invalidRange.min.x),
                                Mathf.Max(validRange.min.x, invalidRange.min.x),
@@ -126,7 +138,7 @@ namespace AmoaebaUtils
             } 
             
             found = true;
-            return RandomPointInBounds(bounds[Random.Range(0,bounds.Count)]);
+            return RandomPoint2DInBounds(bounds[Random.Range(0,bounds.Count)]);
         }
         
         public static Vector2Int NormalizedMaxValueVector(Vector2 dir, bool yOnTie = true)
@@ -251,6 +263,24 @@ namespace AmoaebaUtils
             {
                 Debug.DrawLine(points[i],points[i+1],color, duration, depthTest);
             }       
+        }
+
+        // Coroutine for linearly interpolating between points over a set duration
+        // Calls interpStep every fram
+        // calls endCallback at the end of execution
+        public static IEnumerator EvaluateLinearly(Vector3[] points, float duration,  Action<Vector3> interpStep, Action endCallback) // meant to be used as a coroutine
+        {
+            float elapsed = 0;
+            while(elapsed < duration)
+            {
+                interpStep?.Invoke(GeometryUtils.EvaluatePointList(points, elapsed/duration));
+                yield return new WaitForEndOfFrame();
+                elapsed = Mathf.Clamp(elapsed+Time.deltaTime,0, duration);
+            }
+
+            interpStep?.Invoke(GeometryUtils.EvaluatePointList(points, 1.0f));
+
+            endCallback?.Invoke();
         }
     }   
 }
