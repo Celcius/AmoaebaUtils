@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace AmoaebaUtils
 {
@@ -32,6 +33,11 @@ public abstract class CurveAnim : MonoBehaviour
         }
 
         elapsedTime = elapsedTime + GetDeltaTime();
+
+        if(animationSpeed.wrapMode == PhysicsAnimationCurve.WrapMode.Repeat)
+        {
+            elapsedTime = elapsedTime % lastInstant;
+        }
 
         OnChange(animationSpeed.Evaluate(0, elapsedTime, GetDeltaTime()));
    }
