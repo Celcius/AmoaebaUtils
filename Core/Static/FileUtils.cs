@@ -94,5 +94,22 @@ public class FileUtils
         outfile.WriteLine(" }");
         outfile.WriteLine("}");
     }
+
+    // Example of filter "t:AssetType"
+    // If the filter isn't correct it may include nulls
+    public static T[] GetAllInstances<T>(string filter, string folder = "Assets/") where T : UnityEngine.Object
+    {
+        string[] assetNames = AssetDatabase.FindAssets(filter, new[] { folder });
+        T[] retArray = new T[assetNames.Length];
+
+        for(int i = 0; i < assetNames.Length;i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(assetNames[i]);
+            T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            retArray[i] = asset;
+        }
+
+        return retArray;
+    }
 }
 }
