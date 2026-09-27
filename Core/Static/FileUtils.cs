@@ -95,6 +95,7 @@ public class FileUtils
         outfile.WriteLine("}");
     }
 
+#if UNITY_EDITOR
     // Example of filter "t:AssetType"
     // If the filter isn't correct it may include nulls
     public static T[] GetAllInstances<T>(string filter, string folder = "Assets/") where T : UnityEngine.Object
@@ -111,5 +112,7 @@ public class FileUtils
 
         return retArray;
     }
+#endif
+
 }
 }
