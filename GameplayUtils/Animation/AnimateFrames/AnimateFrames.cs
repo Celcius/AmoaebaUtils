@@ -104,7 +104,7 @@ public class AnimateFrames : MonoBehaviour
         StartCoroutine(playRoutine);
     }
 
-    public void StopPlaying()
+    public void StopPlaying(int frame = 0)
     {
         if(playRoutine != null)
         {
@@ -115,12 +115,12 @@ public class AnimateFrames : MonoBehaviour
         
         if(spriteRenderer != null)
         {
-            spriteRenderer.sprite = frames.Length > 0 ? frames[0] : spriteRenderer.sprite;
+            spriteRenderer.sprite = frames.Length > frame-1 ? frames[frame] : spriteRenderer.sprite;
         }
 
         if(image != null)
         {
-            image.sprite = frames.Length > 0 ? frames[0] : image.sprite;
+            image.sprite = frames.Length > frame-1 ? frames[frame] : image.sprite;
         }   
     }
 
