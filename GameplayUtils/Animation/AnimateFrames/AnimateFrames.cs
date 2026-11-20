@@ -19,7 +19,7 @@ public class AnimateFrames : MonoBehaviour
     private Image image;
     
     [SerializeField]
-    private Sprite[] frames;
+    protected Sprite[] frames;
 
     [SerializeField]
     private float frameTime = 0.1f;
@@ -139,7 +139,7 @@ public class AnimateFrames : MonoBehaviour
             {
                 this.Sprite = frames[index];
                 elapsed = frameTime;
-                index = loop? (index +1) % frames.Length : (index +1);
+                index = NextIndex();
             }
             
             if(frames.Length == 1)
@@ -155,6 +155,11 @@ public class AnimateFrames : MonoBehaviour
 
         FinishedAnimating();
         playRoutine = null;
+    }
+
+    protected virtual int NextIndex()
+    {
+       return loop? (index +1) % frames.Length : (index +1);
     }
 
     protected virtual void FinishedAnimating() {}
