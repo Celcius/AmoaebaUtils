@@ -8,6 +8,9 @@ public class ScaleAnim : CurveAnim
 {
     [SerializeField]
     private Vector3 speedVec;
+
+    [SerializeField]
+    private Vector3 constantScale = Vector3.zero;
     private Vector3 initScale;
 
     
@@ -21,7 +24,7 @@ public class ScaleAnim : CurveAnim
     {
         Vector3 newScale = initScale;
         newScale.Scale(speedVec * evaluatedVal);
-        transform.localScale = newScale;
+        transform.localScale = newScale + constantScale;
     }
 }
 }
