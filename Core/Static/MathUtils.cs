@@ -60,5 +60,15 @@ public static class MathUtils
     {
         return Random.Range(vector.x, vector.y);
     }
+
+    public static float MapRangeClamped(float a, float originX, float originY, float destX, float destY)
+    {
+        return Mathf.LerpUnclamped(destX, destY, Mathf.InverseLerp(originX, originY, a));
+    }
+
+    public static float MapRangeUnclamped(float a, float originX, float originY, float destX, float destY)
+    {
+        return destX + (a - originX) * (destY - destX) / (originY - originX);
+    }
 }
 }
